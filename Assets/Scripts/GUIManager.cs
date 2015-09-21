@@ -19,21 +19,20 @@ public class GUIManager : MonoBehaviour {
 		buttonManagers = new List<BuildButtonManager> ();
 
 		// setup build menu
-		for (int i = 0; i < gss.labItems.Length; i++) {
+		for (int i = 0; i < gss.labItemPrefabs.Length; i++) {
 
-			if (gss.labItems[i].Available) {
+			LabItem labItem = gss.labItemPrefabs[i].GetComponent<LabItem>();
 
-				GameObject btn = Instantiate (buildButton, new Vector3 ( 0f, 0f, 0f), buildButton.transform.localRotation) as GameObject;
-				btn.transform.SetParent(buildButtonsPanel.transform);				
-				RectTransform btnPos = btn.GetComponent<RectTransform>();
-				btnPos.anchoredPosition = new Vector3(0f, -32f + (-64f*buttonManagers.Count), 0f);
+			GameObject btn = Instantiate (buildButton, new Vector3 ( 0f, 0f, 0f), buildButton.transform.localRotation) as GameObject;
+			btn.transform.SetParent(buildButtonsPanel.transform);				
+			RectTransform btnPos = btn.GetComponent<RectTransform>();
+			btnPos.anchoredPosition = new Vector3(0f, -32f + (-64f*buttonManagers.Count), 0f);
 
-				BuildButtonManager mgr = btn.GetComponent<BuildButtonManager>();
-				mgr.title = gss.labItems[i].Title;
-				mgr.price = gss.labItems[i].Price;
-				buttonManagers.Add (mgr);
+			BuildButtonManager mgr = btn.GetComponent<BuildButtonManager>();
+			mgr.title = labItem.title;
+			mgr.price = labItem.price;
+			buttonManagers.Add (mgr);
 
-			}
 		}
 
 		float panelHeight = buttonManagers.Count * 64f;

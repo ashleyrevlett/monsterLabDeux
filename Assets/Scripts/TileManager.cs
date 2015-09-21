@@ -19,8 +19,8 @@ public class TileManager : MonoBehaviour {
 	}
 
 	void OnMouseDown() {
-//		Debug.Log ("Mouse down on tile");
-//		Debug.Log ("Pos: " + transform.position);
+		Debug.Log ("Mouse down on tile");
+		Debug.Log ("Pos: " + transform.position);
 		gm.DropPiece (transform.position);
 	}
 

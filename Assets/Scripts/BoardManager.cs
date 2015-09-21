@@ -6,8 +6,8 @@ using System.Collections.Generic;
 public class BoardManager : MonoBehaviour
 {
 	
-	public int columns = 8;                                         //Number of columns in our game board.
-	public int rows = 6;                                            //Number of rows in our game board.
+	public int columns = 5;                                         //Number of columns in our game board.
+	public int rows = 5;                                            //Number of rows in our game board.
 	public GameObject tile;                                         //Prefab to spawn for tile bg
 	public Transform boardHolder { get; private set; }              //A variable to store a reference to the transform of our Board object.
 	public Transform pieceHolder  { get; private set; }             // gameobject parent for gamepieces
@@ -48,6 +48,11 @@ public class BoardManager : MonoBehaviour
 		GameObject instance = Instantiate (newTile, new Vector3 ( row, column, 0f), newTile.transform.localRotation) as GameObject;
 		instance.transform.SetParent (pieceHolder);
 		pieces.Add (instance);
+
+		// let piece know it's been set down
+		LabItem labItem = instance.GetComponent<LabItem> ();
+		labItem.setIsPlaced (true);
+
 	}
 
 
@@ -68,6 +73,7 @@ public class BoardManager : MonoBehaviour
 		}
 
 		// no rule violations found
+		Debug.Log("Position for piece valid");
 		return(true);
 	}
 

@@ -36,7 +36,7 @@ public class BuildButtonManager : MonoBehaviour {
 		// TODO send message to game state mgr for active build button
 		Debug.Log (this.title + " is now the active build button");
 
-		GameStateStore.LabItem item = gss.getLabItem (this.title);
+		LabItem item = gss.getLabItem (this.title);
 		if (item != null) {
 			gss.setActiveBuildItem(item);
 		}

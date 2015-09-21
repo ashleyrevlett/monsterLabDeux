@@ -1,18 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameStateStore : MonoBehaviour {
 
-	[System.Serializable]
-	public class LabItem
-	{
-		public string Title;
-		public float Price;
-		public GameObject TilePrefab;
-		public bool Available;
-	}
-
-	public LabItem[] labItems;
+	public GameObject[] labItemPrefabs;
 	private LabItem activeBuildItem;
 
 	private GameManager gm;
@@ -27,7 +19,7 @@ public class GameStateStore : MonoBehaviour {
 		Debug.Log ("Build item store updated!!!");
 
 		// trigger gm to create tile piece and move it when mouse moves
-		gm.HoldPiece (item.TilePrefab);
+		gm.HoldPiece (item.gameObject);
 
 	}
 
@@ -37,9 +29,9 @@ public class GameStateStore : MonoBehaviour {
 
 	public LabItem getLabItem(string title) {
 
-		for (int i = 0; i < this.labItems.Length; i++) {
-			if (this.labItems[i].Title == title)
-				return (this.labItems[i]);
+		for (int i = 0; i < this.labItemPrefabs.Length; i++) {
+			if (this.labItemPrefabs[i].GetComponent<LabItem>().title == title)
+				return (this.labItemPrefabs[i].GetComponent<LabItem>());
 		}
 
 		return null;

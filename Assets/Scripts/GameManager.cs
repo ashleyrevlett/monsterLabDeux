@@ -41,6 +41,8 @@ public class GameManager : MonoBehaviour {
 	// drop a game piece
 	public void DropPiece(Vector3 position) {
 
+		Debug.Log ("Dropping piece from gm");
+
 		if (heldPiece == null)
 			return;
 	
