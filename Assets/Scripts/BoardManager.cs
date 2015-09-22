@@ -12,8 +12,8 @@ public class BoardManager : MonoBehaviour
 	public Transform boardHolder { get; private set; }              //A variable to store a reference to the transform of our Board object.
 	public Transform pieceHolder  { get; private set; }             // gameobject parent for gamepieces
 	private Transform tileHolder; 									// gameobject parent for bg tiles
-	private List <GameObject> pieces = new List <GameObject> ();    // all pieces placed on board
-
+	private List <GameObject> pieces;							    // all pieces placed on board
+	private List <TileManager> tiles;
 
 	void Start () {		
 
@@ -27,12 +27,16 @@ public class BoardManager : MonoBehaviour
 		tileHolder.transform.SetParent (boardHolder);
 		pieceHolder = new GameObject ("Pieces").transform;
 		pieceHolder.transform.SetParent (boardHolder);
-		
+
+		pieces = new List <GameObject> (); 
+		tiles = new List<TileManager> ();
+
 		// create bg tiles
 		for(int x = 1; x <= columns; x++) { 
 			for(int y = 1; y <= rows; y++) {
 				GameObject instance = Instantiate (tile, new Vector3 ( x, y, 0f), Quaternion.identity) as GameObject;
 				instance.transform.SetParent (tileHolder);
+				tiles.Add (instance.GetComponent<TileManager>());
 			}
 		}
 					
@@ -43,15 +47,21 @@ public class BoardManager : MonoBehaviour
 
 	}
 
+
+
 	
-	public void placePiece(int row, int column, GameObject newTile) {	
-		GameObject instance = Instantiate (newTile, new Vector3 ( row, column, 0f), newTile.transform.localRotation) as GameObject;
+	public void placePiece(int row, int column, GameObject piece) {	
+		GameObject instance = Instantiate (piece, new Vector3 ( row, column, 0f), piece.transform.localRotation) as GameObject;
 		instance.transform.SetParent (pieceHolder);
-		pieces.Add (instance);
+		pieces.Add (piece);
 
 		// let piece know it's been set down
 		LabItem labItem = instance.GetComponent<LabItem> ();
 		labItem.setIsPlaced (true);
+
+		// notify tile of its new occupant
+		TileManager tile = getTile (row, column);
+		tile.setLabItem (labItem);
 
 	}
 
@@ -66,9 +76,11 @@ public class BoardManager : MonoBehaviour
 
 		// space must be unoccupied
 		foreach (GameObject p in pieces) {
-			if (p.transform.position.x == col && p.transform.position.y == row) {
-				Debug.Log("Piece already at pos");
-				return(false);
+			if (p != null) {
+				if (p.transform.position.x == col && p.transform.position.y == row) {
+					Debug.Log("Piece already at pos");
+					return(false);
+				}
 			}
 		}
 
@@ -77,6 +89,20 @@ public class BoardManager : MonoBehaviour
 		return(true);
 	}
 
+
+	public TileManager getTile(int row, int column) {
+
+		TileManager theTile = null;
+
+		foreach (TileManager tile in tiles) {
+			if (tile.gameObject.transform.position.x == column && tile.gameObject.transform.position.y == row) {
+				theTile = tile;		
+			}
+		}
+
+		return theTile;
+	
+	}
 
 
 }

@@ -6,9 +6,12 @@ public class GameManager : MonoBehaviour {
 	public float dragSpeed = 15f;
 	private GameObject heldPiece; // gameobject prefab of piece
 	private BoardManager boardManager;
+	private GameStateStore gss;
 
 	void Start () {
-		boardManager = GameObject.Find ("GameManager").GetComponent<BoardManager> ();
+		GameObject gm = GameObject.Find ("GameManager");
+		boardManager = gm.GetComponent<BoardManager> ();
+		gss = gm.GetComponent<GameStateStore> ();
 	}
 	
 
@@ -47,11 +50,17 @@ public class GameManager : MonoBehaviour {
 			return;
 	
 		if (boardManager.isLocationValid ((int)position.x, (int)position.y, heldPiece)) {
-								
-			boardManager.placePiece ((int)position.x, (int)position.y, heldPiece);
+			float price = heldPiece.GetComponent<LabItem>().price;
+			if (gss.getRemainingMoney() >= price) {
+				gss.deductMoney(price);
+				boardManager.placePiece ((int)position.x, (int)position.y, heldPiece);
+				Debug.Log("Money deducted");
+			} else {
+				Debug.Log("Not enough money to place");
+			}
 
+			// drop it either way
 			Destroy(heldPiece); // don't need this gameobject anymore
-
 			heldPiece = null;
 
 		}

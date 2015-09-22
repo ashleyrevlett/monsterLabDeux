@@ -812,7 +812,7 @@ GameObject:
   - 222: {fileID: 1152091371}
   - 114: {fileID: 1152091370}
   m_Layer: 5
-  m_Name: BankText
+  m_Name: MoneyText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1409,6 +1409,7 @@ GameObject:
   - 114: {fileID: 1899244969}
   - 114: {fileID: 1899244968}
   - 114: {fileID: 1899244972}
+  - 114: {fileID: 1899244973}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1424,7 +1425,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1899244967}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cabedb01c58484b7dbbf89aa76f3964e, type: 3}
+  m_Script: {fileID: 11500000, guid: fe1496647c8ad4dac9b5628f933bb867, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   buildButtonsPanel: {fileID: 1083097542}
@@ -1440,9 +1441,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6300c811efb64678ad516b9a7a0f0e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentLevel: 1
+  isPaused: 0
   labItemPrefabs:
   - {fileID: 108706, guid: ac69e8dcdbc764bbaa0e7d1173a08b6c, type: 2}
   - {fileID: 127746, guid: 6d375096a1eb24169b40c45eee841ed3, type: 2}
+  startingMoney: 300
+  startingWater: 10
+  startingFood: 5
+  startingMedicine: 1
+  secsPerDay: 300
 --- !u!114 &1899244970
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1481,6 +1489,22 @@ MonoBehaviour:
   columns: 5
   rows: 5
   tile: {fileID: 144622, guid: 3517f700e347344408dda8e746cfd6e4, type: 2}
+--- !u!114 &1899244973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1899244967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 473b3e9775a0540a2846d3d1c4ce16bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dayText: {fileID: 2085862970}
+  levelText: {fileID: 1137492849}
+  monsterText: {fileID: 2029887936}
+  resourcesText: {fileID: 62919886}
+  moneyText: {fileID: 1152091368}
 --- !u!1 &2029887936
 GameObject:
   m_ObjectHideFlags: 0

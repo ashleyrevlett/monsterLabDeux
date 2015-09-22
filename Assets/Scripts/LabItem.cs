@@ -8,7 +8,7 @@ public class LabItem : MonoBehaviour {
 	public float price;
 	public bool occupiable;
 	private MonsterController occupant = null;
-	private bool isPlaced = false; // for tracking when the tile is set down
+	private bool isPlaced = false; // for tracking when the tile is set down vs in cursor
 
 
 	public void setIsPlaced(bool val) {

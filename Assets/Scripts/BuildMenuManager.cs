@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class GUIManager : MonoBehaviour {
+public class BuildMenuManager : MonoBehaviour {
 
 	public GameObject buildButtonsPanel;
 	public GameObject buildButton;

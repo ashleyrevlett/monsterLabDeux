@@ -4,6 +4,10 @@ using System.Collections;
 public class TileManager : MonoBehaviour {
 	
 	private GameManager gm;
+	private LabItem occupant;
+	private bool isDropping = false;
+
+
 	
 	// Use this for initialization
 	void Start () {
@@ -19,9 +23,16 @@ public class TileManager : MonoBehaviour {
 	}
 
 	void OnMouseDown() {
-		Debug.Log ("Mouse down on tile");
-		Debug.Log ("Pos: " + transform.position);
-		gm.DropPiece (transform.position);
+		if (!isDropping) {
+			isDropping = true;
+			Debug.Log ("Mouse down on tile");
+			Debug.Log ("Pos: " + transform.position);
+			gm.DropPiece (transform.position);
+		}
+	}
+
+	public void setLabItem(LabItem item) {
+		occupant = item;
 	}
 
 }
