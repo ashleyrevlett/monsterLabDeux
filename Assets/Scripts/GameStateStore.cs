@@ -43,9 +43,6 @@ public class GameStateStore : MonoBehaviour {
 		remainingMedicine = startingMedicine;
 		remainingWater = startingWater;
 
-		// init header menu display with current stats
-		headerMenu.UpdateDisplay(daysElapsed, currentLevel, 1, remainingWater, remainingFood, remainingMedicine, remainingMoney);
-
 	}
 
 	void Update() {
@@ -53,12 +50,13 @@ public class GameStateStore : MonoBehaviour {
 		if (isPaused)
 			return;
 
-		secsElapsed += Time.deltaTime;
-		if (secsElapsed >= secsPerDay) {
+		if (secsElapsed >= secsPerDay || secsElapsed == 0) {
 			daysElapsed += 1;
 			secsElapsed = 0;
 			headerMenu.UpdateDisplay(daysElapsed, currentLevel, 1, remainingWater, remainingFood, remainingMedicine, remainingMoney);
 		}
+
+		secsElapsed += Time.deltaTime;
 	
 	}
 

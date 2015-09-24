@@ -3,8 +3,11 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour {
 
+	public GameObject scientistPrefab;
+	private ScientistController scientist;
+
 	public float dragSpeed = 15f;
-	private GameObject heldPiece; // gameobject prefab of piece
+	public GameObject heldPiece; // gameobject prefab of piece
 	private BoardManager boardManager;
 	private GameStateStore gss;
 
@@ -12,6 +15,12 @@ public class GameManager : MonoBehaviour {
 		GameObject gm = GameObject.Find ("GameManager");
 		boardManager = gm.GetComponent<BoardManager> ();
 		gss = gm.GetComponent<GameStateStore> ();
+
+		// place scientist and start him walking
+		GameObject instance = Instantiate (scientistPrefab, new Vector3 ( 1f, 1f, 0f), Quaternion.identity) as GameObject;
+		instance.transform.SetParent (boardManager.pieceHolder);
+		scientist = instance.GetComponent<ScientistController> ();
+//		scientist.Walk ();
 	}
 	
 
@@ -34,10 +43,17 @@ public class GameManager : MonoBehaviour {
 
 	// pick up a game piece
 	public void HoldPiece(GameObject piece) {
-		var posVec = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		posVec.z = 0f;
-		heldPiece = Instantiate (piece, posVec, Quaternion.identity) as GameObject;		 
-		heldPiece.transform.SetParent (boardManager.pieceHolder);
+		float price = piece.GetComponent<LabItem>().price;
+		if (gss.getRemainingMoney() >= price) {
+			var posVec = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			posVec.z = 0f;
+			heldPiece = Instantiate (piece, posVec, Quaternion.identity) as GameObject;		 
+			heldPiece.transform.SetParent (boardManager.pieceHolder);
+		} else {
+			Debug.Log("Not enough money to pick up");
+		}
+
+
 	}
 
 
@@ -50,20 +66,21 @@ public class GameManager : MonoBehaviour {
 			return;
 	
 		if (boardManager.isLocationValid ((int)position.x, (int)position.y, heldPiece)) {
-			float price = heldPiece.GetComponent<LabItem>().price;
-			if (gss.getRemainingMoney() >= price) {
-				gss.deductMoney(price);
-				boardManager.placePiece ((int)position.x, (int)position.y, heldPiece);
-				Debug.Log("Money deducted");
-			} else {
-				Debug.Log("Not enough money to place");
-			}
+			float price = heldPiece.GetComponent<LabItem> ().price;
+			gss.deductMoney (price);
+			boardManager.placePiece ((int)position.x, (int)position.y, heldPiece);
+			Debug.Log ("Money deducted");
 
-			// drop it either way
-			Destroy(heldPiece); // don't need this gameobject anymore
-			heldPiece = null;
+		} else {
+
+			// destroy if we can't place it
+			Destroy (heldPiece); // don't need this gameobject anymore
 
 		}
+
+		// no longer holding it either way		
+		heldPiece = null;
+
 	}
 
 }

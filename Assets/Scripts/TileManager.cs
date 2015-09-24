@@ -2,7 +2,10 @@
 using System.Collections;
 
 public class TileManager : MonoBehaviour {
-	
+
+	public Sprite hoverImage;
+	private Sprite originalImage;
+	private SpriteRenderer spriteRdr;
 	private GameManager gm;
 	private LabItem occupant;
 	private bool isDropping = false;
@@ -13,7 +16,8 @@ public class TileManager : MonoBehaviour {
 	void Start () {
 		
 		gm = GameObject.Find ("GameManager").GetComponent<GameManager> ();
-		
+		spriteRdr = gameObject.GetComponent<SpriteRenderer> ();
+		originalImage = spriteRdr.sprite;
 	}
 
 	
@@ -29,6 +33,15 @@ public class TileManager : MonoBehaviour {
 			Debug.Log ("Pos: " + transform.position);
 			gm.DropPiece (transform.position);
 		}
+	}
+
+	void OnMouseEnter() {
+		if (gm.heldPiece != null)
+			spriteRdr.sprite = hoverImage;
+	}
+
+	void OnMouseExit() {
+		spriteRdr.sprite = originalImage;
 	}
 
 	public void setLabItem(LabItem item) {

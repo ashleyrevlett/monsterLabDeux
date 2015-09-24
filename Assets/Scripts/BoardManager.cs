@@ -9,11 +9,13 @@ public class BoardManager : MonoBehaviour
 	public int columns = 5;                                         //Number of columns in our game board.
 	public int rows = 5;                                            //Number of rows in our game board.
 	public GameObject tile;                                         //Prefab to spawn for tile bg
+	public GameObject wall;                                         //Prefab to spawn for tile bg
 	public Transform boardHolder { get; private set; }              //A variable to store a reference to the transform of our Board object.
 	public Transform pieceHolder  { get; private set; }             // gameobject parent for gamepieces
 	private Transform tileHolder; 									// gameobject parent for bg tiles
 	private List <GameObject> pieces;							    // all pieces placed on board
 	private List <TileManager> tiles;
+	private List <GameObject> walls;
 
 	void Start () {		
 
@@ -30,13 +32,22 @@ public class BoardManager : MonoBehaviour
 
 		pieces = new List <GameObject> (); 
 		tiles = new List<TileManager> ();
+		walls = new List<GameObject> ();
 
 		// create bg tiles
-		for(int x = 1; x <= columns; x++) { 
-			for(int y = 1; y <= rows; y++) {
-				GameObject instance = Instantiate (tile, new Vector3 ( x, y, 0f), Quaternion.identity) as GameObject;
-				instance.transform.SetParent (tileHolder);
-				tiles.Add (instance.GetComponent<TileManager>());
+		for(int x = 0; x <= columns+1; x++) { 
+			for(int y = 0; y <= rows+1; y++) {
+				if (x == 0 || x == columns + 1 || y == 0 || y == rows + 1) {
+					GameObject instance = Instantiate (wall, new Vector3 ( x, y, 0f), Quaternion.identity) as GameObject;
+					instance.name = "Wall (" + x.ToString() + ", " + y.ToString() + ")";
+					instance.transform.SetParent (tileHolder);
+					walls.Add(instance);
+				} else {
+					GameObject instance = Instantiate (tile, new Vector3 ( x, y, 0f), Quaternion.identity) as GameObject;
+					instance.name = "Tile (" + x.ToString() + ", " + y.ToString() + ")";
+					instance.transform.SetParent (tileHolder);
+					tiles.Add (instance.GetComponent<TileManager>());
+				}
 			}
 		}
 					
@@ -47,16 +58,16 @@ public class BoardManager : MonoBehaviour
 
 	}
 
-
-
 	
 	public void placePiece(int row, int column, GameObject piece) {	
-		GameObject instance = Instantiate (piece, new Vector3 ( row, column, 0f), piece.transform.localRotation) as GameObject;
-		instance.transform.SetParent (pieceHolder);
+
+		// snap position to tile pos
 		pieces.Add (piece);
+		Vector3 newPos = new Vector3 (row, column, 0f);
+		piece.transform.position = newPos;
 
 		// let piece know it's been set down
-		LabItem labItem = instance.GetComponent<LabItem> ();
+		LabItem labItem = piece.GetComponent<LabItem> ();
 		labItem.setIsPlaced (true);
 
 		// notify tile of its new occupant
