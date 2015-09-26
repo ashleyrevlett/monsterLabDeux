@@ -1072,7 +1072,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1507198744}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1899244970}
+        m_MethodName: createNewMonster
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &1507198744
@@ -1534,8 +1545,8 @@ MonoBehaviour:
   currentLevel: 1
   isPaused: 0
   labItemPrefabs:
-  - {fileID: 108706, guid: ac69e8dcdbc764bbaa0e7d1173a08b6c, type: 2}
-  - {fileID: 127746, guid: 6d375096a1eb24169b40c45eee841ed3, type: 2}
+  - {fileID: 144396, guid: 898b822c099474e2d8a5f94f6de74ea2, type: 2}
+  - {fileID: 129068, guid: 5bc64798e2be1436f953b58a5a0831b9, type: 2}
   startingMoney: 300
   startingWater: 10
   startingFood: 5
@@ -1553,6 +1564,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scientistPrefab: {fileID: 197692, guid: 72e93bc1db65e4905b2be9ae902e3c45, type: 2}
+  monsterObjects:
+  - {fileID: 193416, guid: 6d1c5e6612948458b8b38ce20261c1bb, type: 2}
   dragSpeed: 100
   heldPiece: {fileID: 0}
 --- !u!4 &1899244971

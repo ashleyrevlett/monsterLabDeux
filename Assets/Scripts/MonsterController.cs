@@ -3,34 +3,79 @@ using System.Collections;
 
 public class MonsterController : MonoBehaviour {
 
-	public float health = 100f; // %
 	public bool isAlive = true;
+	public bool isPlaced = false;
 
-	// per second, milliliters or grams // secsPerDay = 86400
-	public float oxygenConsumption = 6.37f; 	// 550f liters per 24 hrs
-	public float waterConsumption = 0.03f; 	// 2.3 liters per 24 hrs
-	public float co2Production = .05f; 		// 450f liters per 24 hrs
-	public float foodConsumption = .02f; 	// 1.9 kg per 24 hrs
+	public float healRate = 1f;  // how fast creature regenerates health, hp per tick
+	public float appetite = 1f; // how fast hunger and thirst grow
+	public float damageRate = 2f;
 
+	public float maxHealth = 10f; 
+	private float health;
+	
+	public float maxThirst = 10f; 
+	private float thirst;
+
+	public float maxHunger = 10f; 
+	private float hunger;
+
+	public Sprite spriteDead;
 	private SpriteRenderer sprite;
+
 
 	// Use this for initialization
 	void Awake () {
+
 		isAlive = true;
 		sprite = gameObject.GetComponent<SpriteRenderer> ();
 		sprite.enabled = true;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-		if (health <= 0f) {
-			isAlive = false;
-			Debug.Log ("Died!");
-			sprite.enabled = false;
-		}
+
+		health = maxHealth;
+		hunger = 0f;
+		thirst = 0f;
+
+		InvokeRepeating ("Tick", 5f, 5f);
 
 	}
+	
+
+	void Update () {	
+		if (health <= 0f && isAlive) {
+			Die ();
+		}
+	}
+
+
+	void Tick() {	
+
+		Debug.Log ("Ticking!");
+
+		if (!isAlive) {
+			CancelInvoke ();
+			return;
+		}
+
+		// heal self
+		health = Mathf.Min(maxHealth, health + healRate);
+
+		// calc damage if too hungry or thirsty
+		hunger = Mathf.Min (maxHunger, hunger + appetite);
+		thirst = Mathf.Min (maxThirst, thirst + (appetite * 1.75f)); // thirst is 175% stronger than hunger
+		if (hunger >= maxHunger || thirst >= maxThirst) 
+			health = Mathf.Max (0, health - damageRate);			
+
+		Debug.Log (string.Format ("Thirst: {0}\tHunger: {1}\tHealth: {2}\t", thirst, hunger, health));
+
+
+	}
+
+	
+	void Die() {
+		isAlive = false;
+		Debug.Log ("Died!");
+		sprite.enabled = false;
+	}
+	
 
 	public void TakeDamage() {
 		health -= 1f; 

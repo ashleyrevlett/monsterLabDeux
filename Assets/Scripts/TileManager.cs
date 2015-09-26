@@ -8,22 +8,31 @@ public class TileManager : MonoBehaviour {
 	private SpriteRenderer spriteRdr;
 	private GameManager gm;
 	private LabItem occupant;
+	private MonsterController monster;
 	private bool isDropping = false;
 
 
-	
 	// Use this for initialization
-	void Start () {
-		
+	void Start () {		
 		gm = GameObject.Find ("GameManager").GetComponent<GameManager> ();
 		spriteRdr = gameObject.GetComponent<SpriteRenderer> ();
 		originalImage = spriteRdr.sprite;
 	}
 
-	
-	// Update is called once per frame
-	void Update () {
-	
+	public LabItem getOccupant() {
+		return occupant;
+	}
+
+	public void setLabItem(LabItem item) {
+		occupant = item;
+	}
+
+	public MonsterController getMonster () {
+		return monster;
+	}
+
+	public void setMonster ( MonsterController m) {
+		monster = m;
 	}
 
 	void OnMouseDown() {
@@ -42,10 +51,6 @@ public class TileManager : MonoBehaviour {
 
 	void OnMouseExit() {
 		spriteRdr.sprite = originalImage;
-	}
-
-	public void setLabItem(LabItem item) {
-		occupant = item;
 	}
 
 }

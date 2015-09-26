@@ -16,6 +16,7 @@ public class BoardManager : MonoBehaviour
 	private List <GameObject> pieces;							    // all pieces placed on board
 	private List <TileManager> tiles;
 	private List <GameObject> walls;
+	private List <GameObject> monsters;
 
 	void Start () {		
 
@@ -33,6 +34,7 @@ public class BoardManager : MonoBehaviour
 		pieces = new List <GameObject> (); 
 		tiles = new List<TileManager> ();
 		walls = new List<GameObject> ();
+		monsters = new List<GameObject> ();
 
 		// create bg tiles
 		for(int x = 0; x <= columns+1; x++) { 
@@ -75,8 +77,7 @@ public class BoardManager : MonoBehaviour
 		tile.setLabItem (labItem);
 
 	}
-
-
+	
 	public bool isLocationValid(int col, int row, GameObject piece) {
 
 		// space must be on board 
@@ -100,6 +101,38 @@ public class BoardManager : MonoBehaviour
 		return(true);
 	}
 
+	public void placeMonsterPiece(int row, int column, GameObject piece) {	
+
+		// snap position to tile pos
+		monsters.Add (piece);
+		Vector3 newPos = new Vector3 (row, column, 0f);
+		piece.transform.position = newPos;
+		
+		// let piece know it's been set down
+		MonsterController m = piece.GetComponent<MonsterController> ();
+		m.isPlaced = true;
+
+		// notify tile of its new occupant
+		TileManager tile = getTile (row, column);
+		tile.setMonster (m);
+
+	}
+	
+	public bool isMonsterLocationValid(int col, int row, GameObject piece) {
+
+		TileManager tile = getTile (row, col);
+		LabItem item = tile.getOccupant ();
+
+		if (item == null) // empty tile
+			return true;
+
+		// cage (occupiable=true)
+		if (tile.getOccupant ().occupiable && tile.getMonster() == null)
+			return true;
+		else 
+			return false;
+
+	}
 
 	public TileManager getTile(int row, int column) {
 

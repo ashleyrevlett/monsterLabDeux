@@ -39,12 +39,12 @@ public class ScientistController : MonoBehaviour {
 			if (hit.collider.gameObject.tag == "Obstacle") {
 				return;
 			}
-		} 
-		float newX = gameObject.transform.position.x + direction.x;
-		float newY = gameObject.transform.position.y + direction.y;
-		Vector3 newPos = new Vector3 (newX, newY, gameObject.transform.position.z);
-		gameObject.transform.position = newPos;
-
+		} else { 
+			float newX = gameObject.transform.position.x + direction.x;
+			float newY = gameObject.transform.position.y + direction.y;
+			Vector3 newPos = new Vector3 (newX, newY, gameObject.transform.position.z);
+			gameObject.transform.position = newPos;
+		}
 	}
 
 

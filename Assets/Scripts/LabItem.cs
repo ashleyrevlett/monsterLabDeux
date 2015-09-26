@@ -7,31 +7,29 @@ public class LabItem : MonoBehaviour {
 	public string description;
 	public float price;
 	public bool occupiable;
-	private MonsterController occupant = null;
 	private bool isPlaced = false; // for tracking when the tile is set down vs in cursor
-	private GameObject colliderObject;
+	private BoxCollider2D clickCollider;
+	private GameManager gm;
+
 
 	void Start() {
-
-		colliderObject = transform.Find ("ObstacleCollider").gameObject;
-		Debug.Log ("colliderObject: " + colliderObject);
-		colliderObject.SetActive(false);
-
+		clickCollider = gameObject.GetComponent<BoxCollider2D> ();
+		clickCollider.enabled = false;
+		gm = GameObject.Find ("GameManager").GetComponent<GameManager> ();
 	}
-
 
 	public void setIsPlaced(bool val) {
 		isPlaced = val;
 		Debug.Log (val);
-		Debug.Log (colliderObject);
-		if (val == true) {
-			colliderObject = transform.Find ("ObstacleCollider").gameObject;
-			colliderObject.SetActive (true);
-		}
+		clickCollider.enabled = true;
 	}
 
 	public bool getIsPlaced() {
 		return (isPlaced);
+	}
+
+	void OnMouseDown() {
+		gm.DropPiece (transform.position);
 	}
 
 }
