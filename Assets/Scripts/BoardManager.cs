@@ -110,7 +110,7 @@ public class BoardManager : MonoBehaviour
 		
 		// let piece know it's been set down
 		MonsterController m = piece.GetComponent<MonsterController> ();
-		m.isPlaced = true;
+		m.setIsPlaced (true);
 
 		// notify tile of its new occupant
 		TileManager tile = getTile (row, column);

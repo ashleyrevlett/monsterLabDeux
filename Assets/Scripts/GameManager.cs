@@ -9,6 +9,9 @@ public class GameManager : MonoBehaviour {
 	public GameObject[] monsterObjects;
 	private MonsterController[] monsters;
 
+	public GameObject infoPanelObject;
+	private InfoPanelManager infoPanel;
+
 	public float dragSpeed = 15f;
 	public GameObject heldPiece; // gameobject prefab of piece
 	private BoardManager boardManager;
@@ -18,6 +21,9 @@ public class GameManager : MonoBehaviour {
 		GameObject gm = GameObject.Find ("GameManager");
 		boardManager = gm.GetComponent<BoardManager> ();
 		gss = gm.GetComponent<GameStateStore> ();
+		infoPanel = gm.GetComponent<InfoPanelManager> ();
+		infoPanelObject.SetActive (false);
+
 		// place scientist and start him walking
 		GameObject instance = Instantiate (scientistPrefab, new Vector3 ( 1f, 1f, 0f), Quaternion.identity) as GameObject;
 		instance.transform.SetParent (boardManager.pieceHolder);
@@ -40,6 +46,7 @@ public class GameManager : MonoBehaviour {
 	
 	// pick up a game piece
 	public void HoldPiece(GameObject piece) {
+		hideInfo (); // in case we're viewing info panel, close it
 		float price = piece.GetComponent<LabItem>().price;
 		if (gss.getRemainingMoney() >= price) {
 			var posVec = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -60,7 +67,7 @@ public class GameManager : MonoBehaviour {
 		
 		Debug.Log ("Dropping piece from gm");
 
-		if (heldPiece.tag == "Obstacle") {
+		if (heldPiece.tag == "Obstacle") { // obstacle == labitem
 			if (boardManager.isLocationValid ((int)position.x, (int)position.y, heldPiece)) {
 				float price = heldPiece.GetComponent<LabItem> ().price;
 				gss.deductMoney (price);
@@ -77,18 +84,32 @@ public class GameManager : MonoBehaviour {
 				boardManager.placeMonsterPiece ((int)position.x, (int)position.y, heldPiece);
 				Debug.Log ("Monster placed");
 				heldPiece = null;
-			} 					
+			} 
+			// do not destroy monster; hold it until we place it in the right spot
 		}
 
 	}
 
 	
 	public void createNewMonster() {
-	
+		hideInfo (); // in case we're viewing info panel, close it
 		GameObject instance = Instantiate (monsterObjects[0], new Vector3 ( 1f, 1f, 0f), Quaternion.identity) as GameObject;
 		instance.transform.SetParent (boardManager.pieceHolder);
 		heldPiece = instance;
 
+	}
+
+	// show the info panel with the monster's live info
+	public void showInfo(MonsterController monster) {	
+		// if holding a piece, do not activate infopanel
+		if (heldPiece == null) {
+			infoPanelObject.SetActive (true);
+			infoPanel.displayMonster (monster);	
+		}
+	}
+
+	public void hideInfo() {	
+		infoPanelObject.SetActive (false);
 	}
 
 

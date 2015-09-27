@@ -4,27 +4,34 @@ using System.Collections;
 public class MonsterController : MonoBehaviour {
 
 	public bool isAlive = true;
-	public bool isPlaced = false;
+	private bool isPlaced = false;
 
 	public float healRate = 1f;  // how fast creature regenerates health, hp per tick
 	public float appetite = 1f; // how fast hunger and thirst grow
 	public float damageRate = 2f;
 
 	public float maxHealth = 10f; 
-	private float health;
+	public float health { get; set; }
 	
 	public float maxThirst = 10f; 
-	private float thirst;
+	public float thirst { get; set; }
 
 	public float maxHunger = 10f; 
-	private float hunger;
+	public float hunger { get; set; }
 
 	public Sprite spriteDead;
 	private SpriteRenderer sprite;
 
+	private BoxCollider2D bc; // activate collider when placed to start tracking mouse clicks
+	private GameManager gm; 
 
 	// Use this for initialization
 	void Awake () {
+
+		gm = GameObject.Find ("GameManager").GetComponent<GameManager> ();
+
+		bc = gameObject.GetComponent<BoxCollider2D> ();
+		bc.enabled = false;
 
 		isAlive = true;
 		sprite = gameObject.GetComponent<SpriteRenderer> ();
@@ -79,6 +86,17 @@ public class MonsterController : MonoBehaviour {
 
 	public void TakeDamage() {
 		health -= 1f; 
+	}
+
+	public void setIsPlaced(bool val) {
+		isPlaced = val;
+		if (isPlaced == true)
+			bc.enabled = true;
+	}
+
+	void OnMouseDown() {
+		Debug.Log ("Mouse down on monster!");
+		gm.showInfo (this);
 	}
 
 

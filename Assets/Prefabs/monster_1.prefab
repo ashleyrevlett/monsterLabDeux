@@ -43,14 +43,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isAlive: 1
-  isPlaced: 0
   healRate: 1
   appetite: 1
   damageRate: 0
   maxHealth: 10
   maxThirst: 10
   maxHunger: 10
-  spriteDead: {fileID: 21300000, guid: cf47627174d414281b23014a4ce501ae, type: 3}
+  spriteDead: {fileID: 21300000, guid: ccc4c109de89243e083a29a06f7cba97, type: 3}
 --- !u!212 &21224312
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -75,7 +74,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300002, guid: cf47627174d414281b23014a4ce501ae, type: 3}
+  m_Sprite: {fileID: 21300002, guid: ccc4c109de89243e083a29a06f7cba97, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!224 &22418858
 RectTransform:
@@ -109,6 +108,16 @@ Prefab:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300002, guid: ccc4c109de89243e083a29a06f7cba97,
+        type: 3}
+    - target: {fileID: 0}
+      propertyPath: spriteDead
+      value: 
+      objectReference: {fileID: 21300000, guid: ccc4c109de89243e083a29a06f7cba97,
+        type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 193416}

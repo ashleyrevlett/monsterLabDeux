@@ -36,6 +36,7 @@ public class TileManager : MonoBehaviour {
 	}
 
 	void OnMouseDown() {
+		gm.hideInfo (); // in case we're viewing info panel, close it
 		if (!isDropping) {
 			isDropping = true;
 			Debug.Log ("Mouse down on tile");
