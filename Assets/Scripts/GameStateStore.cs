@@ -15,14 +15,15 @@ public class GameStateStore : MonoBehaviour {
 	private float remainingMoney;
 
 	public float startingWater;
-	private float remainingWater;
+	public float remainingWater { get; private set; }
 	
 	public float startingFood;
-	private float remainingFood;	
+	public float remainingFood { get; private set; }	
 	
 	public float startingMedicine;
-	private float remainingMedicine;
+	public float remainingMedicine { get; private set; }	
 
+	public int daysPerYear = 10;
 	public int secsPerDay = 300;
 	private int daysElapsed = 0;
 	private float secsElapsed = 0f;

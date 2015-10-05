@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour {
 	private BoardManager boardManager;
 	private GameStateStore gss;
 
+	private MonsterController activeMonster; // monster whose info is being shown
+
 	void Start () {
 		GameObject gm = GameObject.Find ("GameManager");
 		boardManager = gm.GetComponent<BoardManager> ();
@@ -105,12 +107,44 @@ public class GameManager : MonoBehaviour {
 		if (heldPiece == null) {
 			infoPanelObject.SetActive (true);
 			infoPanel.displayMonster (monster);	
+			activeMonster = monster;
 		}
 	}
 
 	public void hideInfo() {	
 		infoPanelObject.SetActive (false);
+		if (activeMonster != null) {
+			activeMonster.Deselect ();
+			activeMonster = null;
+		}
 	}
 
-
+	
+	public void Water() {
+		if (gss.remainingWater >= 1) {
+			activeMonster.Water ();
+			gss.deductWater (1f);
+		} else {
+			Debug.Log ("No water remaining");
+		}
+	}
+	
+	public void Feed() {
+		if (gss.remainingFood >= 1) {
+			activeMonster.Feed ();
+			gss.deductFood(1f);
+		} else {
+			Debug.Log ("No food remaining");
+		}
+	}
+	
+	public void Heal() {
+		if (gss.remainingMedicine >= 1) {
+			activeMonster.Heal ();
+			gss.deductMedicine (1f);
+		} else {
+			Debug.Log ("No meds remaining");
+		}
+	}
+	
 }
