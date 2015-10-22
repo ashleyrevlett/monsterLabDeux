@@ -179,7 +179,10 @@ MonoBehaviour:
   title: Lab Table
   description: Conduct experiments here
   price: 100
-  occupiable: 0
+  occupiable: 1
+  experimentLocation: 1
+  damagePerTick: 1
+  experimentTime: 5
 --- !u!114 &11468152
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -333,6 +336,22 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_TagString
       value: Obstacle
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: occupiable
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: experimentLocation
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: damagePerTick
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: experimentTime
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

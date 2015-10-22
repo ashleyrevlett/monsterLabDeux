@@ -1,16 +1,20 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class GameManager : MonoBehaviour {
 
 	public GameObject scientistPrefab;
-	private ScientistController scientist;
+//	private ScientistController scientist;
 
 	public GameObject[] monsterObjects;
 	private MonsterController[] monsters;
 
 	public GameObject infoPanelObject;
 	private InfoPanelManager infoPanel;
+
+	public GameObject alertPanel;
+	public bool selectingExperiment { get; set; }
 
 	public float dragSpeed = 15f;
 	public GameObject heldPiece; // gameobject prefab of piece
@@ -24,12 +28,17 @@ public class GameManager : MonoBehaviour {
 		boardManager = gm.GetComponent<BoardManager> ();
 		gss = gm.GetComponent<GameStateStore> ();
 		infoPanel = gm.GetComponent<InfoPanelManager> ();
-		infoPanelObject.SetActive (false);
+		if (infoPanel)
+			infoPanelObject.SetActive (false);
+		selectingExperiment = false;
 
 		// place scientist and start him walking
 		GameObject instance = Instantiate (scientistPrefab, new Vector3 ( 1f, 1f, 0f), Quaternion.identity) as GameObject;
 		instance.transform.SetParent (boardManager.pieceHolder);
-		scientist = instance.GetComponent<ScientistController> ();
+
+		selectingExperiment = false;
+		alertPanel.SetActive (false);
+//		scientist = instance.GetComponent<ScientistController> ();
 	}
 	
 
@@ -116,6 +125,7 @@ public class GameManager : MonoBehaviour {
 		if (activeMonster != null) {
 			activeMonster.Deselect ();
 			activeMonster = null;
+			selectingExperiment = false;
 		}
 	}
 
@@ -146,5 +156,31 @@ public class GameManager : MonoBehaviour {
 			Debug.Log ("No meds remaining");
 		}
 	}
-	
+
+	// when the monster's experiment button has pressed and we need to 
+	// choose the lab table or other experiment location
+	public void SelectExperiment() {
+		selectingExperiment = true;
+		// show alert
+		alertPanel.SetActive (true);
+		Text alertText = alertPanel.GetComponentInChildren<Text> ();
+		alertText.text = "Select an empty lab table or DNA sequencer.";
+		StartCoroutine (HideAlert());
+	}
+
+	public void DoExperiment(float damagePerTick, float experimentTime, Vector3 position) {
+		Debug.Log ("Doing experiment in GM");
+		selectingExperiment = false;
+		// show alert
+		alertPanel.SetActive (false);
+		activeMonster.transform.position = position;
+		activeMonster.Experiment (damagePerTick, experimentTime);
+
+	}
+
+	private IEnumerator HideAlert() {
+		yield return new WaitForSeconds(3f);
+		alertPanel.SetActive (false);
+	}
+
 }

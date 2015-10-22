@@ -8,13 +8,11 @@ public class BuildMenuManager : MonoBehaviour {
 	public GameObject buildButton;
 	private List<BuildButtonManager> buttonManagers;
 
-	private GameManager gm;
 	private GameStateStore gss;
 
 	// Use this for initialization
 	void Start () {
 
-		gm = GameObject.Find ("GameManager").GetComponent<GameManager> ();
 		gss = GameObject.Find ("GameManager").GetComponent<GameStateStore> ();
 		buttonManagers = new List<BuildButtonManager> ();
 

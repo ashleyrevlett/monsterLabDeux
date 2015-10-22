@@ -21,6 +21,9 @@ public class MonsterController : MonoBehaviour {
 
 	public bool isAlive { get; set; }
 	private bool isPlaced = false;
+	private bool isExperimenting = false;
+	private float experimentDamage; 
+	private float experimentTicksRemaining;
 
 	public float healRate = 1f;  // how fast creature regenerates health, hp per tick
 	public float appetite = 1f; // how fast hunger and thirst grow
@@ -103,17 +106,23 @@ public class MonsterController : MonoBehaviour {
 			return;
 		}
 
+		if (isExperimenting) {
+			experimentTicksRemaining -= 1f;
+			TakeDamage(experimentDamage);
+		}
 
+		if (experimentTicksRemaining <= 0)
+			isExperimenting = false;
 
 		// calc damage if too hungry or thirsty
 		hunger = Mathf.Min (maxHunger, hunger + appetite);
 		thirst = Mathf.Min (maxThirst, thirst + (appetite * 1.75f)); // thirst is 175% stronger than hunger
 		if (hunger >= maxHunger || thirst >= maxThirst) 
-			TakeDamage ();
+			TakeDamage (damageRate);
 		else 
 			sprite.sprite = spriteAlive; // show the default sprite
-					
-		Debug.Log (string.Format ("Thirst: {0}\tHunger: {1}\tHealth: {2}\t", thirst, hunger, health));
+
+//		Debug.Log (string.Format ("Thirst: {0}\tHunger: {1}\tHealth: {2}\t", thirst, hunger, health));
 
 
 	}
@@ -126,8 +135,8 @@ public class MonsterController : MonoBehaviour {
 	}
 	
 
-	public void TakeDamage() {
-		health = Mathf.Max (0, health - damageRate);	
+	public void TakeDamage(float amount) {
+		health = Mathf.Max (0, health - amount);	
 		sprite.sprite = spriteDamage;
 	}
 
@@ -165,6 +174,12 @@ public class MonsterController : MonoBehaviour {
 		health = maxHealth;
 		Debug.Log ("Healed " + monsterName + ", health: " + health);
 	}
-
+	
+	public void Experiment(float damagePerTick, float ticks) {
+		Debug.Log ("Conducting Experiment in Monster!");
+		isExperimenting = true;
+		experimentDamage = damagePerTick;
+		experimentTicksRemaining = ticks;
+	}
 
 }

@@ -9,7 +9,6 @@ public class BuildButtonManager : MonoBehaviour {
 	public Text titleText;
 	public Text priceText;
 
-	private GameManager gm;
 	private GameStateStore gss;
 	private Button button;
 
@@ -18,7 +17,6 @@ public class BuildButtonManager : MonoBehaviour {
 
 		// remember game state ferences
 		GameObject gameManager = GameObject.Find ("GameManager");
-		gm = gameManager.GetComponent<GameManager> ();
 		gss = gameManager.GetComponent<GameStateStore> ();
 
 		// setup click handler to change active build button in game state

@@ -70,14 +70,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e412642b22e749c8a108885f8f8a615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isAlive: 1
   healRate: 1
   appetite: 1
-  damageRate: 0
   maxHealth: 10
   maxThirst: 10
   maxHunger: 10
+  spriteDamage: {fileID: 21300000, guid: c9b682c1fb7ca45d081bba9c980093b9, type: 3}
   spriteDead: {fileID: 21300000, guid: ccc4c109de89243e083a29a06f7cba97, type: 3}
+  spriteAlive: {fileID: 21300002, guid: ccc4c109de89243e083a29a06f7cba97, type: 3}
   selectedBackground: {fileID: 137140}
 --- !u!212 &21224312
 SpriteRenderer:
