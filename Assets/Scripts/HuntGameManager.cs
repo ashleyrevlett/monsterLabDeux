@@ -25,9 +25,9 @@ public class HuntGameManager : MonoBehaviour {
 		instance.transform.position = new Vector3 ();
 		scientist = instance.GetComponent<ScientistController> ();
 
-		float boardCenterX = (int)(boardManager.columns / 2f);
-		float boardCenterY = (int)(boardManager.rows / 2f);
-		scientist.transform.position = new Vector3 (boardCenterX, boardCenterY, 0f);
+//		float boardCenterX = (int)(boardManager.columns / 2f);
+//		float boardCenterY = (int)(boardManager.rows / 2f);
+		scientist.transform.position = new Vector3 (1f, 1f, 0f);
 
 	}
 	

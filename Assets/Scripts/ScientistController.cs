@@ -11,11 +11,20 @@ public class ScientistController : MonoBehaviour {
 	public Sprite rightImage;
 
 	public float walkSpeed = 1f;
-	public float tolerance = 0.5f;
+	public float tolerance = 0;
 
+	public bool canWalk = true;
 	private bool isWalking = false;
 	private Vector2 faceDirection = Vector2.up;
-	private Vector3 moveToLocation = Vector3.zero;
+	private Vector3 startMarker;
+	private Vector3 endMarker;
+	private float walkStartTime;
+
+	private Vector3 camMoveFromLoc;
+	private Vector3 camMoveToLoc;
+	private float camStartMoveTime;
+	private bool isCamMoving = false;
+
 
 	private SpriteRenderer spriteRenderer;
 
@@ -34,7 +43,6 @@ public class ScientistController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-
 		Vector2 moveDir = Vector2.zero;
 		if (Input.GetKeyDown("left")) {
 			moveDir = Vector2.left;
@@ -50,14 +58,15 @@ public class ScientistController : MonoBehaviour {
 
 		if (Input.GetKeyDown ("left") || Input.GetKeyDown ("right") || 
 		    Input.GetKeyDown ("up") || Input.GetKeyDown ("down")) {
-//			if (faceDirection == moveDir && !isWalking) { // facing right dir already, make walk
-//				isWalking = true;
-//				float newX = transform.position.x + moveDir.x;
-//				float newY = transform.position.y + moveDir.y;
-//				moveToLocation = new Vector3(newX, newY, 0f);
-//				Debug.Log ("iswalking");
-//			} else 
-			if (faceDirection != moveDir) { // stop walking, turn to face direction
+			if (faceDirection == moveDir && !isWalking && canWalk) { // facing right dir already, make walk
+				isWalking = true;
+				float newX = transform.position.x + moveDir.x;
+				float newY = transform.position.y + moveDir.y;
+				endMarker = new Vector3(newX, newY, 0f);
+				startMarker = gameObject.transform.position;
+				Debug.Log ("iswalking");
+				walkStartTime = Time.time;
+			} else if (faceDirection != moveDir) { // stop walking, turn to face direction
 				isWalking = false;
 				faceDirection = moveDir;
 				Turn (faceDirection);
@@ -67,12 +76,12 @@ public class ScientistController : MonoBehaviour {
 
 		if (isWalking) 
 			Walk ();
-
-
+	
 		// shoot
 		if (Input.GetKeyDown ("space")) {
 			Shoot();
 		}
+
 	}
 
 	private void Shoot() {
@@ -102,59 +111,33 @@ public class ScientistController : MonoBehaviour {
 
 	public void Walk() {
 
-		if (Mathf.Abs(transform.position.x - moveToLocation.x) <= tolerance &&
-		    Mathf.Abs(transform.position.y - moveToLocation.y) <= tolerance ) {
+		// stop walking when we get within tolerable range
+		if (Mathf.Abs(transform.position.x - endMarker.x) <= tolerance &&
+		    Mathf.Abs(transform.position.y - endMarker.y) <= tolerance ) {
 			isWalking = false;
-			transform.position = moveToLocation;
 			return;
 		}
 
-		Debug.Log ("Walking to " + moveToLocation);
-		gameObject.transform.position = Vector2.Lerp (transform.position, moveToLocation, walkSpeed);
-
-		//		Vector2 direction = faceDirection;
-//
-//		int layerMask = 1 << 8; // bit shift layer index to get mask 
-//
-//		RaycastHit2D hit = Physics2D.Raycast(gameObject.transform.position, direction, 1f, layerMask);
-//		if (hit.collider != null) {
-//			float distance = Mathf.Abs (hit.point.y - gameObject.transform.position.y);
-//			Debug.Log ("Hit " + hit.collider.gameObject.name + ", distance to hit: " + distance);
-//			if (hit.collider.gameObject.tag == "Obstacle") {
-//				return;
-//			}
-//		} else { 
-//
-////			float newX = gameObject.transform.position.x + direction.x;
-////			float newY = gameObject.transform.position.y + direction.y;
-////			Vector3 newPos = new Vector3 (newX, newY, gameObject.transform.position.z);
-////			gameObject.transform.position = newPos;
-//			Vector3 newPos = Vector2.Lerp (transform.position, moveToLocation, walkSpeed * Time.deltaTime);
-//			gameObject.transform.position = newPos;
-	//			
-		// if scientist has moved within edge of board, move camera in that direction too
-		float leftSideOfScreen = Camera.main.transform.position.x - Camera.main.orthographicSize * Screen.width / Screen.height;
-		float rightSideOfScreen = Camera.main.transform.position.x + Camera.main.orthographicSize * Screen.width / Screen.height;
-		float topOfScreen = Camera.main.transform.position.y + Camera.main.orthographicSize;
-		float bottomOfScreen = Camera.main.transform.position.y - Camera.main.orthographicSize;
-		Debug.Log ("leftSideOfScreen: " + leftSideOfScreen);
-		Debug.Log ("rightSideOfScreen: " + rightSideOfScreen);
-		Debug.Log ("topOfScreen: " + topOfScreen);
-		Debug.Log ("bottomOfScreen: " + bottomOfScreen);
-
-		float offset = 3f;
-		if (gameObject.transform.position.x <= leftSideOfScreen + offset) {
-			Vector3 newPos = new Vector3 (Camera.main.transform.position.x - 1f, Camera.main.transform.position.y, Camera.main.transform.position.z);
-			Camera.main.transform.position = Vector3.Lerp (Camera.main.transform.position, newPos, walkSpeed);
-		} else if (gameObject.transform.position.x >= rightSideOfScreen - offset) {
-			Vector3 newPos = new Vector3 (Camera.main.transform.position.x + 1f, Camera.main.transform.position.y, Camera.main.transform.position.z);
-			Camera.main.transform.position = Vector3.Lerp (Camera.main.transform.position, newPos, walkSpeed);
-		} else if (gameObject.transform.position.y <= bottomOfScreen + offset) {
-			Vector3 newPos = new Vector3 (Camera.main.transform.position.x, Camera.main.transform.position.y - 1f, Camera.main.transform.position.z);
-			Camera.main.transform.position = Vector3.Lerp (Camera.main.transform.position, newPos, walkSpeed);
-		} else if (gameObject.transform.position.y >= topOfScreen - offset) {
-			Vector3 newPos = new Vector3 (Camera.main.transform.position.x, Camera.main.transform.position.y + 1f, Camera.main.transform.position.z);
-			Camera.main.transform.position = Vector3.Lerp (Camera.main.transform.position, newPos, walkSpeed);			
+		// raycast to see if there's an object tagged "Obstacle" in our way
+		Vector2 direction = faceDirection;
+		bool canMove = true;
+		RaycastHit2D[] hits = Physics2D.RaycastAll(gameObject.transform.position, direction, 1f);
+		foreach (RaycastHit2D hit in hits) {
+			if (hit.collider != null) {
+				float distance = Mathf.Abs (hit.point.y - gameObject.transform.position.y);
+				Debug.Log ("Hit " + hit.collider.gameObject.tag + ", distance to hit: " + distance);
+				if (hit.collider.gameObject.tag == "Obstacle") {
+					Debug.Log ("Not moving, object in front");
+					canMove = false; // can't just return because we might not be first in list
+				}
+			}
+		}
+		if (canMove) {
+			Debug.Log ("Clear path, moving");
+			// no Obstacle, so smoothly move toward position
+			float distCovered = (Time.time - walkStartTime) * walkSpeed;
+			float fracJourney = distCovered / 1f; // moving one unit
+			gameObject.transform.position = Vector3.Lerp(startMarker, endMarker, fracJourney);
 		}
 
 	}

@@ -1038,21 +1038,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1adead65ca32942709748c44a4dd9f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  columns: 14
-  rows: 7
+  columns: 8
+  rows: 6
   grassTiles:
   - {fileID: 109532, guid: 2587baf078aea49b39ab17ec8b7b95a0, type: 2}
   - {fileID: 183710, guid: f1e6eeb062e28493d8a57f8bd82b2c7b, type: 2}
   - {fileID: 148538, guid: 8524e570136544c9e9d929bbedc44838, type: 2}
-  wallTile: {fileID: 121358, guid: 567b324ef1e394c51b6272fb742931d4, type: 2}
-  treeTiles: []
-  waterTiles:
-  - {fileID: 121358, guid: 567b324ef1e394c51b6272fb742931d4, type: 2}
-  - {fileID: 153030, guid: 6be5218fec5884e388df0d2c57b92b46, type: 2}
-  minTrees: 1
-  maxTrees: 5
-  minWater: 1
-  maxWater: 4
+  wallTile: {fileID: 162716, guid: 0176634d3fafa4ef6a6f70007c6f5ce2, type: 2}
+  obstacleTiles:
+  - {fileID: 142596, guid: 421552d08a5994e30bdce86b15a9682f, type: 2}
+  - {fileID: 159704, guid: e94d3a6fad5fd4b9399953edaa8c6793, type: 2}
+  minObstacles: 1
+  maxObstacles: 3
 --- !u!114 &1899244969
 MonoBehaviour:
   m_ObjectHideFlags: 0

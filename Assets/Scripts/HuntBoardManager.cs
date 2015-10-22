@@ -14,31 +14,22 @@ public class HuntBoardManager : MonoBehaviour {
 	public GameObject[] grassTiles;                                         //Prefab to spawn for tile bg
 	public GameObject wallTile;                                         //Prefab to spawn for tile bg
 
-	public GameObject[] treeTiles;
-	public GameObject[] waterTiles;
-
-	public int minTrees;
-	public int maxTrees;
-	private int treesCount;
-
-	public int minWater;
-	public int maxWater;
-	private int waterCount;
+	public GameObject[] obstacleTiles;
+	public int minObstacles;
+	public int maxObstacles;
+	private int obstaclesCount;
 	
 	private List <GameObject> pieces;							    // all pieces placed on board
 	private List <GameObject> tiles;
 	private List <GameObject> walls;
-
+	private List <GameObject> obstacles;
 
 	void Start () {
 		
 		// game object heirarchy:
 		// - board
-		// -- pieces (game pieces in play)
+		// -- pieces (game pieces in)
 		// -- tiles (all bg tiles and box colliders)
-
-		treesCount = (int)Random.Range (minTrees, maxTrees);
-		waterCount = (int)Random.Range (minWater, maxWater);
 
 		boardHolder = new GameObject ("Board").transform;
 		tileHolder = new GameObject ("Tiles").transform;
@@ -48,12 +39,13 @@ public class HuntBoardManager : MonoBehaviour {
 		
 		pieces = new List <GameObject> (); 
 		tiles = new List<GameObject> ();
-		walls = new List<GameObject> ();
+		walls = new List<GameObject> ();	
 
 		// create bg tiles
-		for(int x = 0; x <= columns+1; x++) { 
-			for(int y = 0; y <= rows+1; y++) {
-				if (x == 0 || x == columns + 1 || y == 0 || y == rows + 1) {
+		int offset = 6;
+		for(int x = -offset; x <= columns+offset; x++) { 
+			for(int y = -offset; y <= rows+offset; y++) {
+				if (x <= 0 || x >= columns + offset || y <= 0 || y >= rows + offset) {
 					GameObject instance = Instantiate (wallTile, new Vector3 ( x, y, 0f), Quaternion.identity) as GameObject;
 					instance.name = "Wall (" + x.ToString() + ", " + y.ToString() + ")";
 					instance.transform.SetParent (tileHolder);
@@ -67,7 +59,20 @@ public class HuntBoardManager : MonoBehaviour {
 				}
 			}
 		}
-		
+
+		// add random obstacles to board
+		obstaclesCount = (int)Random.Range (minObstacles, maxObstacles);
+		obstacles = new List<GameObject> ();
+		for (int i = 0; i < obstaclesCount; i++) {
+			int rndIdx = Random.Range(0, obstacleTiles.Length-1);
+			int rndCol = Random.Range(1, columns);
+			int rndRow = Random.Range(1, rows);
+			GameObject obs = obstacleTiles[(int)rndIdx];
+			GameObject instance = Instantiate (obs, new Vector3 ( rndCol, rndRow, 0f), Quaternion.identity) as GameObject;
+			instance.transform.SetParent (pieceHolder);
+			obstacles.Add(instance);
+		}
+
 		// move camera to center of board
 		float boardCenterX = columns / 2f;
 		float boardCenterY = rows / 2f;
@@ -76,8 +81,4 @@ public class HuntBoardManager : MonoBehaviour {
 	}
 
 
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }
