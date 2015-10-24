@@ -13,6 +13,12 @@ public class BulletController : MonoBehaviour {
 		HuntBoardManager boardManager = GameObject.Find("GameManager").GetComponent<HuntBoardManager> ();
 		boardSize = new Vector2 (boardManager.columns, boardManager.rows);
 	}
+
+	public void Hit() {
+		Debug.Log ("Hit!");
+		isMoving = false;
+		Destroy (gameObject);
+	}
 	
 	public void Fire(Vector3 dir) {
 		Debug.Log (dir);
@@ -29,8 +35,8 @@ public class BulletController : MonoBehaviour {
 				Time.deltaTime * moveSpeed);	
 		}
 	
-		if (gameObject.transform.position.x < 0 || gameObject.transform.position.x > boardSize.x || 
-			gameObject.transform.position.y < 0 || gameObject.transform.position.y > boardSize.y) {
+		if (gameObject.transform.position.x < -boardSize.x * 256f || gameObject.transform.position.x > boardSize.x * 256f || 
+		    gameObject.transform.position.y < -boardSize.y * 256f || gameObject.transform.position.y > boardSize.y * 256f) {
 			Debug.Log("Remove object");
 			isMoving = false;
 		}

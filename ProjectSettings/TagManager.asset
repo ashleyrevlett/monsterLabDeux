@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Monster
   - LabItem
+  - Obstacle
+  - Bullet
   layers:
   - Default
   - TransparentFX

@@ -1050,6 +1050,9 @@ MonoBehaviour:
   - {fileID: 159704, guid: e94d3a6fad5fd4b9399953edaa8c6793, type: 2}
   minObstacles: 1
   maxObstacles: 3
+  monsterPrefabs:
+  - {fileID: 193416, guid: 6d1c5e6612948458b8b38ce20261c1bb, type: 2}
+  monsterCount: 2
 --- !u!114 &1899244969
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1084,7 +1087,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scientistPrefab: {fileID: 197692, guid: 72e93bc1db65e4905b2be9ae902e3c45, type: 2}
-  monsterObjects: []
 --- !u!4 &1899244971
 Transform:
   m_ObjectHideFlags: 0

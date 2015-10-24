@@ -18,11 +18,16 @@ public class HuntBoardManager : MonoBehaviour {
 	public int minObstacles;
 	public int maxObstacles;
 	private int obstaclesCount;
-	
+
+	public GameObject[] monsterPrefabs;
+	public int monsterCount;
+	private List <GameObject> monsters;
+
 	private List <GameObject> pieces;							    // all pieces placed on board
 	private List <GameObject> tiles;
 	private List <GameObject> walls;
 	private List <GameObject> obstacles;
+	
 
 	void Start () {
 		
@@ -67,10 +72,38 @@ public class HuntBoardManager : MonoBehaviour {
 			int rndIdx = Random.Range(0, obstacleTiles.Length-1);
 			int rndCol = Random.Range(1, columns);
 			int rndRow = Random.Range(1, rows);
+
+			// do not place on scientist (1,1) pos
+			if (rndCol == 1)
+				rndCol = 2;
+			if (rndRow == 1)
+				rndRow = 2;
+
 			GameObject obs = obstacleTiles[(int)rndIdx];
 			GameObject instance = Instantiate (obs, new Vector3 ( rndCol, rndRow, 0f), Quaternion.identity) as GameObject;
 			instance.transform.SetParent (pieceHolder);
 			obstacles.Add(instance);
+		}
+
+		// add monsters to board 
+		monsters = new List<GameObject> ();
+		for (int i = 0; i < monsterCount; i++) {
+//			int rndIdx = Random.Range(0, monsterPrefabs.Length-1);
+			int rndIdx = 1;
+			int rndCol = Random.Range(1, columns);
+			int rndRow = Random.Range(1, rows);
+			
+			// do not place on scientist (1,1) pos
+			if (rndCol == 1)
+				rndCol = 2;
+			if (rndRow == 1)
+				rndRow = 2;
+			
+//			GameObject item = monsterPrefabs[(int)rndIdx];
+			GameObject item = monsterPrefabs[0];
+			GameObject instance = Instantiate (item, new Vector3 ( rndCol, rndRow, 0f), Quaternion.identity) as GameObject;
+			instance.transform.SetParent (pieceHolder);
+			monsters.Add(instance);
 		}
 
 		// move camera to center of board

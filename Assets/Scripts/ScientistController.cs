@@ -20,8 +20,8 @@ public class ScientistController : MonoBehaviour {
 	private Vector3 endMarker;
 	private float walkStartTime;
 
-	private Vector3 camMoveFromLoc;
-	private Vector3 camMoveToLoc;
+	private Vector3 camStartMarker;
+	private Vector3 camEndMarker;
 	private float camStartMoveTime;
 	private bool isCamMoving = false;
 
@@ -29,6 +29,7 @@ public class ScientistController : MonoBehaviour {
 	private SpriteRenderer spriteRenderer;
 
 	private BoardManager boardManager;
+	private HuntBoardManager huntBoardManager;
 
 	// Use this for initialization
 	void Start () {
@@ -36,6 +37,12 @@ public class ScientistController : MonoBehaviour {
 
 		GameObject gm = GameObject.Find ("GameManager");
 		boardManager = gm.GetComponent<BoardManager> ();
+
+		GameObject hgm = GameObject.Find ("HuntGameManager");
+		huntBoardManager = gm.GetComponent<HuntBoardManager> ();
+
+		Vector3 camPos = new Vector3 (gameObject.transform.position.x, gameObject.transform.position.y, Camera.main.transform.position.z);
+		Camera.main.transform.position = camPos;
 	}
 
 
@@ -74,20 +81,78 @@ public class ScientistController : MonoBehaviour {
 			}
 		}
 
-		if (isWalking) 
+		if (isWalking) {
 			Walk ();
+		}
+
+		// MoveCamera ();
+		Vector3 cpos = new Vector3 (gameObject.transform.position.x, gameObject.transform.position.y, Camera.main.transform.position.z);
+		Camera.main.transform.position = cpos;
 	
 		// shoot
 		if (Input.GetKeyDown ("space")) {
 			Shoot();
 		}
 
+
+
+	}
+
+	private void MoveCamera() {
+	
+		
+		// if scientist has moved within edge of board, move camera in that direction too
+		float leftSideOfScreen = Camera.main.transform.position.x - Camera.main.orthographicSize * Screen.width / Screen.height;
+		float rightSideOfScreen = Camera.main.transform.position.x + Camera.main.orthographicSize * Screen.width / Screen.height;
+		float topOfScreen = Camera.main.transform.position.y + Camera.main.orthographicSize;
+		float bottomOfScreen = Camera.main.transform.position.y - Camera.main.orthographicSize;
+		
+		// camera movement required if scientist is this many tiles from edge
+		float offset = 3f;
+		if (!isCamMoving && gameObject.transform.position.x <= (leftSideOfScreen + offset)) {
+			isCamMoving = true;
+			camStartMoveTime = Time.time;
+			camStartMarker = Camera.main.transform.position;
+			camEndMarker = new Vector3 (Camera.main.transform.position.x - 1f, Camera.main.transform.position.y, Camera.main.transform.position.z);
+		} else if (!isCamMoving && (gameObject.transform.position.x >= rightSideOfScreen - offset)) {
+			isCamMoving = true;
+			camStartMoveTime = Time.time;
+			camStartMarker = Camera.main.transform.position;
+			camEndMarker = new Vector3 (Camera.main.transform.position.x + 1f, Camera.main.transform.position.y, Camera.main.transform.position.z);
+		} else if (!isCamMoving && (gameObject.transform.position.y <= bottomOfScreen + offset)) {
+			isCamMoving = true;
+			camStartMoveTime = Time.time;
+			camStartMarker = Camera.main.transform.position;
+			camEndMarker = new Vector3 (Camera.main.transform.position.x, Camera.main.transform.position.y - 1f, Camera.main.transform.position.z);
+		} else if (!isCamMoving && (gameObject.transform.position.y >= topOfScreen - offset)) {
+			isCamMoving = true;
+			camStartMoveTime = Time.time;
+			camStartMarker = Camera.main.transform.position;
+			camEndMarker = new Vector3 (Camera.main.transform.position.x, Camera.main.transform.position.y + 1f, Camera.main.transform.position.z);
+		}
+		
+		if (isCamMoving) {
+			// no Obstacle, so smoothly move toward position
+			float distCovered = (Time.time - camStartMoveTime) * walkSpeed;
+			float fracJourney = Mathf.Min(1f, (distCovered / 1f)); // moving one unit
+			Camera.main.transform.position = Vector3.Lerp(camStartMarker, camEndMarker, fracJourney);
+
+			// stop moving
+			if (Camera.main.transform.position == camEndMarker) 
+				isCamMoving = false;
+
+		}
+
+
+
+	
 	}
 
 	private void Shoot() {
 		Debug.Log ("shoot!");
 		GameObject instance = Instantiate (bulletTile, gameObject.transform.position, Quaternion.identity) as GameObject;
-		instance.transform.SetParent (gameObject.transform);
+		instance.transform.SetParent (huntBoardManager.pieceHolder);
+		instance.transform.position = gameObject.transform.position;
 		BulletController bullet = instance.GetComponent<BulletController> ();
 
 		Vector3 shootDir = new Vector3 (faceDirection.x, faceDirection.y, 0f);
@@ -126,7 +191,7 @@ public class ScientistController : MonoBehaviour {
 			if (hit.collider != null) {
 				float distance = Mathf.Abs (hit.point.y - gameObject.transform.position.y);
 				Debug.Log ("Hit " + hit.collider.gameObject.tag + ", distance to hit: " + distance);
-				if (hit.collider.gameObject.tag == "Obstacle") {
+				if (hit.collider.gameObject.tag == "Obstacle" || hit.collider.gameObject.tag == "Monster") {
 					Debug.Log ("Not moving, object in front");
 					canMove = false; // can't just return because we might not be first in list
 				}

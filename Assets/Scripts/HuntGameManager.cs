@@ -6,9 +6,6 @@ public class HuntGameManager : MonoBehaviour {
 	public GameObject scientistPrefab;
 	private ScientistController scientist;
 	
-	public GameObject[] monsterObjects;
-	private MonsterController[] monsters;
-
 	private HuntBoardManager boardManager;
 	private GameStateStore gss;
 

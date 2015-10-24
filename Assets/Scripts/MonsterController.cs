@@ -47,6 +47,11 @@ public class MonsterController : MonoBehaviour {
 	private BoxCollider2D bc; // activate collider when placed to start tracking mouse clicks
 	private GameManager gm; 
 	private GameStateStore gss;
+	private HuntGameManager hgm;
+	private HuntBoardManager huntboard;
+
+	Vector2 faceDirection = Vector2.right;
+	public float walkSpeed = 1f;
 
 	// Use this for initialization
 	void Awake () {
@@ -54,12 +59,20 @@ public class MonsterController : MonoBehaviour {
 		gm = GameObject.Find ("GameManager").GetComponent<GameManager> ();
 		gss = GameObject.Find ("GameManager").GetComponent<GameStateStore> ();
 
+		hgm = GameObject.Find ("GameManager").GetComponent<HuntGameManager> ();
+		huntboard = GameObject.Find ("GameManager").GetComponent<HuntBoardManager> ();
+			
+
 		// turn off activeBg until monster is selected
 		selectedBackground.SetActive (false);
 
-		// turn off collider until monster is set down
+		// turn off collider until monster is set down in lab mode
 		bc = gameObject.GetComponent<BoxCollider2D> ();
-		bc.enabled = false;
+		if (gm != null) {
+			bc.enabled = false;
+		} else {
+			bc.enabled = true;
+		}
 
 		// prepare death sprite
 		isAlive = true;
@@ -86,16 +99,22 @@ public class MonsterController : MonoBehaviour {
 		agility = (int)UnityEngine.Random.Range (1f, 100f);
 		intelligence = (int)UnityEngine.Random.Range (1f, 100f);
 
-		// begin monster's life cycle
-		InvokeRepeating ("Tick", 5f, 5f);
+		// begin monster's life cycle, whether in lab or field
+		if (gm != null)
+			InvokeRepeating ("Tick", 5f, 5f);
+			
+		if (hgm != null)
+			StartCoroutine (Roam ());
 
 	}
-	
+
+
 
 	void Update () {	
 		if (isAlive && (health <= 0f || age > lifespan)) {
 			Die ();
 		}
+
 	}
 
 
@@ -122,9 +141,33 @@ public class MonsterController : MonoBehaviour {
 		else 
 			sprite.sprite = spriteAlive; // show the default sprite
 
-//		Debug.Log (string.Format ("Thirst: {0}\tHunger: {1}\tHealth: {2}\t", thirst, hunger, health));
+		//  Debug.Log (string.Format ("Thirst: {0}\tHunger: {1}\tHealth: {2}\t", thirst, hunger, health));
 
 
+	}
+
+
+	IEnumerator Roam() {
+		bool canWalk = true; 
+		while (canWalk) {		
+			// check for obstacles		
+			RaycastHit2D[] hits = Physics2D.RaycastAll(gameObject.transform.position, faceDirection, 1f);
+			foreach (RaycastHit2D hit in hits) {
+				if (hit.collider != null) {
+					float distance = Mathf.Abs (hit.point.y - gameObject.transform.position.y);
+					Debug.Log ("Monster Hit " + hit.collider.gameObject.tag + ", distance to hit: " + distance);
+					if (hit.collider.gameObject.tag == "Obstacle") {
+						Debug.Log ("Not moving, object in front");
+						// turn around
+						faceDirection = new Vector3(-faceDirection.x, faceDirection.y);
+					}
+				}
+			}
+			// walk in facing direction
+			Vector3 newDir = faceDirection * (walkSpeed * Time.deltaTime);
+			gameObject.transform.position += newDir; 
+			yield return null;		
+		}
 	}
 
 	
@@ -148,15 +191,16 @@ public class MonsterController : MonoBehaviour {
 
 	void OnMouseDown() {
 		Debug.Log ("Mouse down on monster!");
-		gm.hideInfo ();
-		if (gm.heldPiece == null) {
-			gm.showInfo (this);
-			selectedBackground.SetActive (true);
+		if (gm != null) {
+			gm.hideInfo ();
+			if (gm.heldPiece == null) {
+				gm.showInfo (this);
+				selectedBackground.SetActive (true);
+			}
 		}
 	}
 
 	public void Deselect() {
-		selectedBackground.SetActive (false);
 	}
 
 	
@@ -180,6 +224,14 @@ public class MonsterController : MonoBehaviour {
 		isExperimenting = true;
 		experimentDamage = damagePerTick;
 		experimentTicksRemaining = ticks;
+	}
+
+	void OnTriggerEnter2D(Collider2D other) {
+		if (other.gameObject.tag == "Bullet") {
+			other.gameObject.GetComponent<BulletController> ().Hit ();		
+			StopAllCoroutines();
+			Die ();
+		}
 	}
 
 }
