@@ -27,6 +27,7 @@ GameObject:
   - 212: {fileID: 21224312}
   - 61: {fileID: 6151444}
   - 114: {fileID: 11409414}
+  - 50: {fileID: 5019528}
   m_Layer: 0
   m_Name: monster_1
   m_TagString: Monster
@@ -46,6 +47,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 22418858}
   m_RootOrder: 0
+--- !u!50 &5019528
+Rigidbody2D:
+  serializedVersion: 2
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 193416}
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: .0500000007
+  m_GravityScale: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!61 &6151444
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -79,6 +96,7 @@ MonoBehaviour:
   spriteDead: {fileID: 21300000, guid: ccc4c109de89243e083a29a06f7cba97, type: 3}
   spriteAlive: {fileID: 21300002, guid: ccc4c109de89243e083a29a06f7cba97, type: 3}
   selectedBackground: {fileID: 137140}
+  walkSpeed: 1
 --- !u!212 &21224312
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -174,6 +192,14 @@ Prefab:
       value: 
       objectReference: {fileID: 21300000, guid: ccc4c109de89243e083a29a06f7cba97,
         type: 3}
+    - target: {fileID: 0}
+      propertyPath: m_IsKinematic
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_GravityScale
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 193416}
