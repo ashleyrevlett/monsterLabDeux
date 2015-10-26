@@ -9,10 +9,10 @@ GameObject:
   m_Component:
   - 4: {fileID: 497374}
   - 212: {fileID: 21260948}
-  - 114: {fileID: 11497802}
   - 61: {fileID: 6177140}
+  - 114: {fileID: 11473742}
   m_Layer: 0
-  m_Name: Scientist
+  m_Name: Hunter
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,7 +43,7 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
---- !u!114 &11497802
+--- !u!114 &11473742
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -51,9 +51,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 197692}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06797f71c12bc4c5093a7eb5ab4ebe42, type: 3}
+  m_Script: {fileID: 11500000, guid: 7d2e95d63bf6042129104c5f3844bd44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bulletTile: {fileID: 163320, guid: 35a2d3fa5d6444e2aa1c6b98d9d51375, type: 2}
+  frontImage: {fileID: 21300000, guid: e2fcbcb18337f4885885ea1a787ea40e, type: 3}
+  backImage: {fileID: 21300000, guid: a3d9d920a84014877a55426d98916a96, type: 3}
+  leftImage: {fileID: 21300000, guid: 5dfed6b5f296e461da6b90381b5b25e5, type: 3}
+  rightImage: {fileID: 21300000, guid: 792192d872a2447f4b5b5892f8e7df42, type: 3}
+  walkSpeed: 1
+  tolerance: 0
+  canWalk: 1
 --- !u!212 &21260948
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -78,7 +86,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300000, guid: 34b6e09be03d2406a86de8ff4dd5def4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a3d9d920a84014877a55426d98916a96, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &100100000
 Prefab:
@@ -126,7 +134,7 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 34b6e09be03d2406a86de8ff4dd5def4,
+      objectReference: {fileID: 21300000, guid: a3d9d920a84014877a55426d98916a96,
         type: 3}
     - target: {fileID: 0}
       propertyPath: walkSpeed

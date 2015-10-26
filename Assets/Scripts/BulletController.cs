@@ -10,7 +10,7 @@ public class BulletController : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		HuntBoardManager boardManager = GameObject.Find("GameManager").GetComponent<HuntBoardManager> ();
+		HuntBoardManager boardManager = GameObject.Find("HuntScene").GetComponent<HuntBoardManager> ();
 		boardSize = new Vector2 (boardManager.columns, boardManager.rows);
 	}
 
@@ -21,7 +21,7 @@ public class BulletController : MonoBehaviour {
 	}
 	
 	public void Fire(Vector3 dir) {
-		Debug.Log (dir);
+		Debug.Log ("Firing in direction: " + dir);
 		moveDirection = dir.normalized;
 		isMoving = true;
 	}
@@ -43,4 +43,15 @@ public class BulletController : MonoBehaviour {
 
 
 	}
+
+	
+	void OnTriggerEnter2D(Collider2D other) {
+		Debug.Log ("Trigger entered on bullet");
+		if (other.gameObject.tag == "Monster") {
+			MonsterController m = other.gameObject.GetComponent<MonsterController>();
+			m.Die();
+			Hit ();	
+		}
+	}
+
 }

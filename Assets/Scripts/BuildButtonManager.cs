@@ -9,15 +9,14 @@ public class BuildButtonManager : MonoBehaviour {
 	public Text titleText;
 	public Text priceText;
 
-	private GameStateStore gss;
+	private BuildMenuManager buildMenu;
 	private Button button;
 
 
 	void Start () {	
 
-		// remember game state ferences
-		GameObject gameManager = GameObject.Find ("GameManager");
-		gss = gameManager.GetComponent<GameStateStore> ();
+		// remember game references
+		buildMenu = GameObject.Find ("LabGUIPrefab").GetComponent<BuildMenuManager> ();
 
 		// setup click handler to change active build button in game state
 		button = gameObject.GetComponent<Button> ();
@@ -28,18 +27,12 @@ public class BuildButtonManager : MonoBehaviour {
 		priceText.text = "$" + price.ToString ("F2");
 
 	}
-
-
+	
 	public void updateActiveBuildButton(){
-		// TODO send message to game state mgr for active build button
-		Debug.Log (this.title + " is now the active build button");
-
-		LabItem item = gss.getLabItem (this.title);
+		LabItem item = buildMenu.getLabItem (this.title);
 		if (item != null) {
-			gss.setActiveBuildItem(item);
+			buildMenu.setActiveBuildItem(item);
 		}
 	}
-
-
 
 }

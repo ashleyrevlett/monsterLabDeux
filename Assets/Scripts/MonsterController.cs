@@ -46,29 +46,33 @@ public class MonsterController : MonoBehaviour {
 
 	private BoxCollider2D bc; // activate collider when placed to start tracking mouse clicks
 	private GameManager gm; 
+	private BoardManager board;
 	private GameStateStore gss;
-	private HuntGameManager hgm;
+//	
 	private HuntBoardManager huntboard;
 
 	Vector2 faceDirection = Vector2.right;
 	public float walkSpeed = 1f;
 
 	// Use this for initialization
-	void Awake () {
+	void Start () {
 
 		gm = GameObject.Find ("GameManager").GetComponent<GameManager> ();
 		gss = GameObject.Find ("GameManager").GetComponent<GameStateStore> ();
 
-		hgm = GameObject.Find ("GameManager").GetComponent<HuntGameManager> ();
-		huntboard = GameObject.Find ("GameManager").GetComponent<HuntBoardManager> ();
-			
+
+		if (gm.currentLevel == 1) {
+			board = GameObject.Find ("LabScene").GetComponent<BoardManager> ();
+		} else {
+			huntboard = GameObject.Find ("HuntScene").GetComponent<HuntBoardManager> ();
+		}		
 
 		// turn off activeBg until monster is selected
 		selectedBackground.SetActive (false);
 
 		// turn off collider until monster is set down in lab mode
 		bc = gameObject.GetComponent<BoxCollider2D> ();
-		if (gm != null) {
+		if (gm.currentLevel == 1) {
 			bc.enabled = false;
 		} else {
 			bc.enabled = true;
@@ -100,10 +104,10 @@ public class MonsterController : MonoBehaviour {
 		intelligence = (int)UnityEngine.Random.Range (1f, 100f);
 
 		// begin monster's life cycle, whether in lab or field
-		if (gm != null)
+		if (board != null)
 			InvokeRepeating ("Tick", 5f, 5f);
 			
-		if (hgm != null)
+		if (huntboard != null)
 			StartCoroutine (Roam ());
 
 	}
@@ -155,9 +159,9 @@ public class MonsterController : MonoBehaviour {
 			foreach (RaycastHit2D hit in hits) {
 				if (hit.collider != null) {
 					float distance = Mathf.Abs (hit.point.y - gameObject.transform.position.y);
-					Debug.Log ("Monster Hit " + hit.collider.gameObject.tag + ", distance to hit: " + distance);
+//					Debug.Log ("Monster Hit " + hit.collider.gameObject.tag + ", distance to hit: " + distance);
 					if (hit.collider.gameObject.tag == "Obstacle") {
-						Debug.Log ("Not moving, object in front");
+//						Debug.Log ("Not moving, object in front");
 						// turn around
 						faceDirection = new Vector3(-faceDirection.x, faceDirection.y);
 					}
@@ -171,7 +175,8 @@ public class MonsterController : MonoBehaviour {
 	}
 
 	
-	void Die() {
+	public void Die() {
+		StopAllCoroutines();
 		isAlive = false;
 		Debug.Log ("Died!");
 		sprite.sprite = spriteDead;
@@ -191,10 +196,10 @@ public class MonsterController : MonoBehaviour {
 
 	void OnMouseDown() {
 		Debug.Log ("Mouse down on monster!");
-		if (gm != null) {
-			gm.hideInfo ();
-			if (gm.heldPiece == null) {
-				gm.showInfo (this);
+		if (gm != null && huntboard == null) {
+			board.hideInfo ();
+			if (board.heldPiece == null) {
+				board.showInfo (this);
 				selectedBackground.SetActive (true);
 			}
 		}
@@ -226,12 +231,5 @@ public class MonsterController : MonoBehaviour {
 		experimentTicksRemaining = ticks;
 	}
 
-	void OnTriggerEnter2D(Collider2D other) {
-		if (other.gameObject.tag == "Bullet") {
-			other.gameObject.GetComponent<BulletController> ().Hit ();		
-			StopAllCoroutines();
-			Die ();
-		}
-	}
 
 }

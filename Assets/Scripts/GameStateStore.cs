@@ -5,14 +5,8 @@ using System.Collections.Generic;
 
 public class GameStateStore : MonoBehaviour {
 
-	public int currentLevel = 1;
-	public bool isPaused;
-
-	public GameObject[] labItemPrefabs;
-	private LabItem activeBuildItem;
-	
 	public float startingMoney;
-	private float remainingMoney;
+	public float remainingMoney { get; private set; }
 
 	public float startingWater;
 	public float remainingWater { get; private set; }
@@ -22,84 +16,57 @@ public class GameStateStore : MonoBehaviour {
 	
 	public float startingMedicine;
 	public float remainingMedicine { get; private set; }	
+	
+	public float startingAmmo;
+	public float remainingAmmo { get; private set; }	
+
 
 	public int daysPerYear = 10;
 	public int secsPerDay = 300;
-	private int daysElapsed = 0;
-	private float secsElapsed = 0f;
-
-//	private float storageMax = 10f;
-//	private float storageRemaining;
-
+	public int daysElapsed { get; private set; }
+	public float secsElapsed { get; private set; }
+	
 	private GameManager gm;
-	private HeaderMenuManager headerMenu = null;
 
 
 	void Start() {
-		gm = GameObject.Find ("GameManager").GetComponent<GameManager> ();
 
-		if (gm != null)
-			headerMenu = gm.GetComponent<HeaderMenuManager> ();
-
+		daysElapsed = 0;
+		secsElapsed = 0f;
 		remainingMoney = startingMoney;
 		remainingFood = startingFood;
 		remainingMedicine = startingMedicine;
 		remainingWater = startingWater;
+		remainingAmmo = startingAmmo;
 
 	}
 
-	void Update() {
-	
-		if (isPaused)
-			return;
+	void Update() {	
 
-		if (secsElapsed >= secsPerDay || secsElapsed == 0) {
+		if (secsElapsed >= secsPerDay) {
 			daysElapsed += 1;
 			secsElapsed = 0;
-			if (headerMenu != null)
-				headerMenu.UpdateDisplay(daysElapsed, currentLevel, 1, remainingWater, remainingFood, remainingMedicine, remainingMoney);
 		}
 
 		secsElapsed += Time.deltaTime;
 	
 	}
 
-	public int getDaysElapsed() {
-		return(daysElapsed);
-	}
-
-	public float getRemainingMoney() {
-		return remainingMoney;
-	}
-
-
-	//TODO implement storage limits and max resources	
-//	public float getStorageRemaining() {
-//		return 10f;
-//	}
-
 	public void addFood(float amount) {
 		remainingFood += amount;
-		if (headerMenu != null) 
-			headerMenu.UpdateDisplay(daysElapsed, currentLevel, 1, remainingWater, remainingFood, remainingMedicine, remainingMoney);
 	}
 	
 	public void addWater(float amount) {
 		remainingWater += amount;
-		if (headerMenu != null) 
-			headerMenu.UpdateDisplay(daysElapsed, currentLevel, 1, remainingWater, remainingFood, remainingMedicine, remainingMoney);
 	}
 	
 	public void addMedicine(float amount) {
 		remainingMedicine += amount;
-		if (headerMenu != null) 
-			headerMenu.UpdateDisplay(daysElapsed, currentLevel, 1, remainingWater, remainingFood, remainingMedicine, remainingMoney);
+
 	}
 
 	public void addMoney(float amount) {
 		remainingMoney += amount;
-		if (headerMenu != null) 
-			headerMenu.UpdateDisplay(daysElapsed, currentLevel, 1, remainingWater, remainingFood, remainingMedicine, remainingMoney);
 	}
 
 	public bool deductFood(float amount) {
@@ -110,9 +77,6 @@ public class GameStateStore : MonoBehaviour {
 
 		remainingFood = Mathf.Max (0, remainingFood - amount);
 
-		if (headerMenu != null) 
-			headerMenu.UpdateDisplay(daysElapsed, currentLevel, 1, remainingWater, remainingFood, remainingMedicine, remainingMoney);
-
 		return true;
 	}
 
@@ -120,9 +84,6 @@ public class GameStateStore : MonoBehaviour {
 		if (remainingWater <= 0)
 			return false;
 		remainingWater = Mathf.Max (0, remainingWater - amount);
-
-		if (headerMenu != null) 
-			headerMenu.UpdateDisplay(daysElapsed, currentLevel, 1, remainingWater, remainingFood, remainingMedicine, remainingMoney);
 
 		return true;
 	}
@@ -132,8 +93,6 @@ public class GameStateStore : MonoBehaviour {
 			return false;
 		remainingMedicine = Mathf.Max (0, remainingMedicine - amount);
 
-		if (headerMenu != null) 
-			headerMenu.UpdateDisplay(daysElapsed, currentLevel, 1, remainingWater, remainingFood, remainingMedicine, remainingMoney);
 
 		return true;
 	}
@@ -142,30 +101,9 @@ public class GameStateStore : MonoBehaviour {
 		if (remainingMoney <= 0)
 			return false;
 		remainingMoney = Mathf.Max (0, remainingMoney - amount);
-		if (headerMenu != null) 
-			headerMenu.UpdateDisplay(daysElapsed, currentLevel, 1, remainingWater, remainingFood, remainingMedicine, remainingMoney);
 
 		return true;
 	}
 
-	public void setActiveBuildItem(LabItem item) {
-		activeBuildItem = item;
-
-		// trigger gm to create tile piece and move it when mouse moves
-		gm.HoldPiece (item.gameObject);
-
-	}
-
-	public LabItem getActiveBuildItem() {
-		return (activeBuildItem);
-	}
-
-	public LabItem getLabItem(string title) {
-		for (int i = 0; i < this.labItemPrefabs.Length; i++) {
-			if (this.labItemPrefabs[i].GetComponent<LabItem>().title == title)
-				return (this.labItemPrefabs[i].GetComponent<LabItem>());
-		}
-		return null;
-	}
 
 }

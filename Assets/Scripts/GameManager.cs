@@ -4,183 +4,53 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour {
 
-	public GameObject scientistPrefab;
-//	private ScientistController scientist;
-
-	public GameObject[] monsterObjects;
-	private MonsterController[] monsters;
-
-	public GameObject infoPanelObject;
-	private InfoPanelManager infoPanel;
-
-	public GameObject alertPanel;
-	public bool selectingExperiment { get; set; }
-
-	public float dragSpeed = 15f;
-	public GameObject heldPiece; // gameobject prefab of piece
-	private BoardManager boardManager;
-	private GameStateStore gss;
-
-	private MonsterController activeMonster; // monster whose info is being shown
+	public int currentLevel = 1;
+	public GameObject labBoardPrefab; // level 1
+	public GameObject huntBoardPrefab; // level 2
+	private GameObject board; // "LabScene" or "HuntScene"
+	
 
 	void Start () {
-		GameObject gm = GameObject.Find ("GameManager");
-		boardManager = gm.GetComponent<BoardManager> ();
-		gss = gm.GetComponent<GameStateStore> ();
-		infoPanel = gm.GetComponent<InfoPanelManager> ();
-		if (infoPanel)
-			infoPanelObject.SetActive (false);
-		selectingExperiment = false;
-
-		// place scientist and start him walking
-		GameObject instance = Instantiate (scientistPrefab, new Vector3 ( 1f, 1f, 0f), Quaternion.identity) as GameObject;
-		instance.transform.SetParent (boardManager.pieceHolder);
-
-		selectingExperiment = false;
-		alertPanel.SetActive (false);
-//		scientist = instance.GetComponent<ScientistController> ();
-	}
-	
-
-	void Update () {
-		// update position of held piece
-		if (heldPiece != null) {		
-			var posVec = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			posVec.z = 0f;
-			heldPiece.transform.position = Vector3.MoveTowards(heldPiece.transform.position, posVec, dragSpeed * Time.deltaTime);			
-			if (Input.GetKeyDown("space")) {
-				Debug.Log("Space key pressed");
-				heldPiece.transform.Rotate (Vector3.forward * 90);
-			}
-		}
-	}
-	
-	// pick up a game piece
-	public void HoldPiece(GameObject piece) {
-		hideInfo (); // in case we're viewing info panel, close it
-		float price = piece.GetComponent<LabItem>().price;
-		if (gss.getRemainingMoney() >= price) {
-			var posVec = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			posVec.z = 0f;
-			heldPiece = Instantiate (piece, posVec, Quaternion.identity) as GameObject;		 
-			heldPiece.transform.SetParent (boardManager.pieceHolder);
-		} else {
-			Debug.Log("Not enough money to pick up");
-		}
+		LoadLevel(currentLevel);
 	}
 
+	public void LoadHuntScene() {
+		LoadLevel (2);
+	}
 
-	// drop a game piece
-	public void DropPiece(Vector3 position) {
+	public void LoadLabScene() {
+		LoadLevel (1);
+	}
+
+	void LoadLevel(int level) {
+
+		ResetLevels ();	// destroy other level if loaded
+
+		if (level == 1) {
+			board = Instantiate (labBoardPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+			board.name = "LabScene";
+			currentLevel = 1;
+		} else if (level == 2) {
+			board = Instantiate (huntBoardPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+			board.name = "HuntScene";
+			currentLevel = 2;
+		}	
+		board.transform.SetParent (gameObject.transform);
 	
-		if (heldPiece == null)
-			return;
+	}
+
+	
+	void ResetLevels() {
 		
-		Debug.Log ("Dropping piece from gm");
-
-		if (heldPiece.tag == "Obstacle") { // obstacle == labitem
-			if (boardManager.isLocationValid ((int)position.x, (int)position.y, heldPiece)) {
-				float price = heldPiece.GetComponent<LabItem> ().price;
-				gss.deductMoney (price);
-				boardManager.placePiece ((int)position.x, (int)position.y, heldPiece);
-				Debug.Log ("Money deducted");
-			} else {
-				// destroy if we can't place it
-				Destroy (heldPiece); // don't need this gameobject anymore
-			}			
-			// no longer holding it either way		
-			heldPiece = null;
-		} else if (heldPiece.tag == "Monster") {
-			if (boardManager.isMonsterLocationValid ((int)position.x, (int)position.y, heldPiece)) {
-				boardManager.placeMonsterPiece ((int)position.x, (int)position.y, heldPiece);
-				Debug.Log ("Monster placed");
-				heldPiece = null;
-			} 
-			// do not destroy monster; hold it until we place it in the right spot
-		}
-
+		GameObject labScene = GameObject.Find("LabScene");
+		if (labScene != null)
+			Destroy(labScene);
+		
+		GameObject huntScene = GameObject.Find("HuntScene");
+		if (huntScene != null)
+			Destroy(huntScene);
+		
 	}
 
-	
-	public void createNewMonster() {
-		hideInfo (); // in case we're viewing info panel, close it
-		GameObject instance = Instantiate (monsterObjects[0], new Vector3 ( 1f, 1f, 0f), Quaternion.identity) as GameObject;
-		instance.transform.SetParent (boardManager.pieceHolder);
-		heldPiece = instance;
-
-	}
-
-	// show the info panel with the monster's live info
-	public void showInfo(MonsterController monster) {	
-		// if holding a piece, do not activate infopanel
-		if (heldPiece == null) {
-			infoPanelObject.SetActive (true);
-			infoPanel.displayMonster (monster);	
-			activeMonster = monster;
-		}
-	}
-
-	public void hideInfo() {	
-		infoPanelObject.SetActive (false);
-		if (activeMonster != null) {
-			activeMonster.Deselect ();
-			activeMonster = null;
-			selectingExperiment = false;
-		}
-	}
-
-	
-	public void Water() {
-		if (gss.remainingWater >= 1) {
-			activeMonster.Water ();
-			gss.deductWater (1f);
-		} else {
-			Debug.Log ("No water remaining");
-		}
-	}
-	
-	public void Feed() {
-		if (gss.remainingFood >= 1) {
-			activeMonster.Feed ();
-			gss.deductFood(1f);
-		} else {
-			Debug.Log ("No food remaining");
-		}
-	}
-	
-	public void Heal() {
-		if (gss.remainingMedicine >= 1) {
-			activeMonster.Heal ();
-			gss.deductMedicine (1f);
-		} else {
-			Debug.Log ("No meds remaining");
-		}
-	}
-
-	// when the monster's experiment button has pressed and we need to 
-	// choose the lab table or other experiment location
-	public void SelectExperiment() {
-		selectingExperiment = true;
-		// show alert
-		alertPanel.SetActive (true);
-		Text alertText = alertPanel.GetComponentInChildren<Text> ();
-		alertText.text = "Select an empty lab table or DNA sequencer.";
-		StartCoroutine (HideAlert());
-	}
-
-	public void DoExperiment(float damagePerTick, float experimentTime, Vector3 position) {
-		Debug.Log ("Doing experiment in GM");
-		selectingExperiment = false;
-		// show alert
-		alertPanel.SetActive (false);
-		activeMonster.transform.position = position;
-		activeMonster.Experiment (damagePerTick, experimentTime);
-
-	}
-
-	private IEnumerator HideAlert() {
-		yield return new WaitForSeconds(3f);
-		alertPanel.SetActive (false);
-	}
 
 }

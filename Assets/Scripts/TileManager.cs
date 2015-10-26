@@ -6,15 +6,15 @@ public class TileManager : MonoBehaviour {
 	public Sprite hoverImage;
 	private Sprite originalImage;
 	private SpriteRenderer spriteRdr;
-	private GameManager gm;
 	private LabItem occupant;
 	private MonsterController monster;
 	private bool isDropping = false;
+	private BoardManager board;
 
 
 	// Use this for initialization
 	void Start () {		
-		gm = GameObject.Find ("GameManager").GetComponent<GameManager> ();
+		board = GameObject.Find ("LabScene").GetComponent<BoardManager> ();
 		spriteRdr = gameObject.GetComponent<SpriteRenderer> ();
 		originalImage = spriteRdr.sprite;
 	}
@@ -36,17 +36,17 @@ public class TileManager : MonoBehaviour {
 	}
 
 	void OnMouseDown() {
-		gm.hideInfo (); // in case we're viewing info panel, close it
+		board.hideInfo (); // in case we're viewing info panel, close it
 		if (!isDropping) {
 			isDropping = true;
 			Debug.Log ("Mouse down on tile");
 			Debug.Log ("Pos: " + transform.position);
-			gm.DropPiece (transform.position);
+			board.DropPiece (transform.position);
 		}
 	}
 
 	void OnMouseEnter() {
-		if (gm.heldPiece != null)
+		if (board.heldPiece != null)
 			spriteRdr.sprite = hoverImage;
 	}
 

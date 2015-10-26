@@ -27,7 +27,8 @@ public class HuntBoardManager : MonoBehaviour {
 	private List <GameObject> tiles;
 	private List <GameObject> walls;
 	private List <GameObject> obstacles;
-	
+
+	private GameManager gm;
 
 	void Start () {
 		
@@ -36,7 +37,10 @@ public class HuntBoardManager : MonoBehaviour {
 		// -- pieces (game pieces in)
 		// -- tiles (all bg tiles and box colliders)
 
+		gm = GameObject.Find ("GameManager").GetComponent<GameManager> ();
+
 		boardHolder = new GameObject ("Board").transform;
+		boardHolder.transform.SetParent (gameObject.transform);
 		tileHolder = new GameObject ("Tiles").transform;
 		tileHolder.transform.SetParent (boardHolder);
 		pieceHolder = new GameObject ("Pieces").transform;
@@ -113,5 +117,8 @@ public class HuntBoardManager : MonoBehaviour {
 
 	}
 
+	public void LoadLabScene() {
+		gm.LoadLabScene ();
+	}
 
 }

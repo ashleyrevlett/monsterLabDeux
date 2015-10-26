@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class HeaderMenuManager : MonoBehaviour {
-	
+
 	public GameObject dayText;
 	public GameObject levelText;
 	public GameObject monsterText;
@@ -16,21 +16,28 @@ public class HeaderMenuManager : MonoBehaviour {
 	private Text resourcesTextT;
 	private Text moneyTextT;
 
+	private GameManager gm;
+	private GameStateStore gss;
+	private BoardManager board;
+
 	void Start () {	
 		dayTextT = dayText.GetComponent<Text> ();
 		levelTextT = levelText.GetComponent<Text> ();
 		monsterTextT = monsterText.GetComponent<Text> ();
 		resourcesTextT = resourcesText.GetComponent<Text> ();
 		moneyTextT = moneyText.GetComponent<Text> ();
+
+		gss = GameObject.Find ("GameManager").GetComponent<GameStateStore> ();
+		board = GameObject.Find ("LabScene").GetComponent<BoardManager> ();
+		gm = GameObject.Find ("GameManager").GetComponent<GameManager> ();
 	}
 
-	public void UpdateDisplay (int daysElapsed, int currentLevel, int monsters, float water, float food, float medicine, float money) {
-		// updateDisplay is invoked from gamestatestore when data is updated
-		dayTextT.text = "DAY " + daysElapsed.ToString ();
-		levelTextT.text = "LEVEL " + currentLevel.ToString ();
-		monsterTextT.text = monsters.ToString () + " MONSTERS";
-		resourcesTextT.text = water.ToString () + " WATER    " + food.ToString () + " FOOD    " + medicine.ToString () + " MEDS";
-		moneyTextT.text = "$" + money.ToString ();
+	void Update() {
+	
+		dayTextT.text = "DAY " + gss.daysElapsed.ToString ();
+		levelTextT.text = "LEVEL " + gm.currentLevel.ToString();
+		monsterTextT.text = board.getMonsterCount ().ToString () + " MONSTERS";
+		resourcesTextT.text = gss.remainingWater.ToString() + " WATER    " + gss.remainingFood.ToString () + " FOOD    " + gss.remainingMedicine.ToString () + " MEDS";
+		moneyTextT.text = "$" + gss.remainingMoney.ToString ();
 	}
-
 }

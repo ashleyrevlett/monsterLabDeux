@@ -28,6 +28,7 @@ public class InfoPanelManager : MonoBehaviour {
 	private Button[] buttons;
 
 	void Start () {	
+			
 		nameTextT = nameText.GetComponent<Text> ();
 		ageTextT = ageText.GetComponent<Text> ();
 		valueTextT = valueText.GetComponent<Text> ();
@@ -40,11 +41,17 @@ public class InfoPanelManager : MonoBehaviour {
 
 		gss = GameObject.Find ("GameManager").GetComponent<GameStateStore> ();
 
+		GameObject obj = GameObject.Find ("InfoPanel");
+		obj.SetActive (false);
+
 		// temp
 		discoveriesTextT.text = "";
 
 		// TODO: fix this
 		buttons = buttonPanel.GetComponentsInChildren<Button> (true);
+
+
+//		gameObject.SetActive (false);
 
 	}
 

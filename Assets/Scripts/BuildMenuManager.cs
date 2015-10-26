@@ -3,23 +3,27 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class BuildMenuManager : MonoBehaviour {
+	
+	public GameObject[] labItemPrefabs;
+	private LabItem activeBuildItem;
 
 	public GameObject buildButtonsPanel;
-	public GameObject buildButton;
+	public GameObject buildButton; // button prefab
 	private List<BuildButtonManager> buttonManagers;
 
-	private GameStateStore gss;
+	private BoardManager board;
 
 	// Use this for initialization
 	void Start () {
 
-		gss = GameObject.Find ("GameManager").GetComponent<GameStateStore> ();
+		board = GameObject.Find ("LabScene").GetComponent<BoardManager> ();
+
 		buttonManagers = new List<BuildButtonManager> ();
 
 		// setup build menu
-		for (int i = 0; i < gss.labItemPrefabs.Length; i++) {
+		for (int i = 0; i < labItemPrefabs.Length; i++) {
 
-			LabItem labItem = gss.labItemPrefabs[i].GetComponent<LabItem>();
+			LabItem labItem = labItemPrefabs[i].GetComponent<LabItem>();
 
 			GameObject btn = Instantiate (buildButton, new Vector3 ( 0f, 0f, 0f), buildButton.transform.localRotation) as GameObject;
 			btn.transform.SetParent(buildButtonsPanel.transform);				
@@ -38,10 +42,25 @@ public class BuildMenuManager : MonoBehaviour {
 
 	}
 	
-
-	void Update () {
-
-		// if there is an active build button
 	
+	public void setActiveBuildItem(LabItem item) {
+		activeBuildItem = item;
+		
+		// board creates tile piece and moves it when mouse moves
+		board.HoldPiece (item.gameObject);
+		
 	}
+	
+	public LabItem getActiveBuildItem() {
+		return (activeBuildItem);
+	}
+	
+	public LabItem getLabItem(string title) {
+		for (int i = 0; i < this.labItemPrefabs.Length; i++) {
+			if (this.labItemPrefabs[i].GetComponent<LabItem>().title == title)
+				return (this.labItemPrefabs[i].GetComponent<LabItem>());
+		}
+		return null;
+	}
+
 }

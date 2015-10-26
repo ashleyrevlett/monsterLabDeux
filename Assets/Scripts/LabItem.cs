@@ -10,7 +10,7 @@ public class LabItem : MonoBehaviour {
 	public MonsterController occupant { set; get; }
 	private bool isPlaced = false; // for tracking when the tile is set down vs in cursor
 	private BoxCollider2D clickCollider;
-	private GameManager gm;
+	private BoardManager board;
 
 	public bool experimentLocation;
 	public float damagePerTick;
@@ -20,7 +20,7 @@ public class LabItem : MonoBehaviour {
 	void Start() {
 		clickCollider = gameObject.GetComponent<BoxCollider2D> ();
 		clickCollider.enabled = false;
-		gm = GameObject.Find ("GameManager").GetComponent<GameManager> ();
+		board = GameObject.Find ("LabScene").GetComponent<BoardManager> ();
 	}
 
 	public void setIsPlaced(bool val) {
@@ -35,11 +35,11 @@ public class LabItem : MonoBehaviour {
 
 	void OnMouseDown() {
 
-		if (gm.heldPiece != null)
-			gm.DropPiece (transform.position);
+		if (board.heldPiece != null)
+			board.DropPiece (transform.position);
 
-		if (gm.selectingExperiment == true)
-			gm.DoExperiment (damagePerTick, experimentTime, gameObject.transform.position);
+		if (board.selectingExperiment == true)
+			board.DoExperiment (damagePerTick, experimentTime, gameObject.transform.position);
 
 		Debug.Log ("Mouse down on lab item");
 	}
