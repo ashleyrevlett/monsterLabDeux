@@ -101,11 +101,25 @@ public class BoardManager : MonoBehaviour
 		}
 
 		// create starting monsters and cages
-//		LabItem cage = gss.getLabItem ("Cage");
-//		MonsterController monster = gss.getMonster (); // TODO refactor monsters
-//		for (int i = 0; i < startingMonsterCount; i++) {
-//			placeMonsterPiece(i*2, 2, monster);
-//		}
+		LabItem cage = gss.getLabItem ("Cage");
+		for (int i = 0; i < startingMonsterCount; i++) {
+
+			GameObject cagePiece = Instantiate (cage.gameObject, Vector3.zero, Quaternion.identity) as GameObject;		 
+			cagePiece.transform.SetParent (pieceHolder);
+			placeLabPiece(i+1, 2,cagePiece);
+
+			GameObject monster = createNewMonster();
+			monster.transform.SetParent (pieceHolder);
+			MonsterController monstercontroller = monster.GetComponent<MonsterController>();
+			placeMonsterPiece(i+1, 2, monstercontroller);
+
+			// turn off bc on cage, turn on for monster
+			BoxCollider2D bcCage = cagePiece.GetComponent<BoxCollider2D>();
+			bcCage.enabled = false;
+			BoxCollider2D bcMonster = monster.GetComponent<BoxCollider2D>();
+			bcMonster.enabled = true;
+
+		}
 
 
 	}
@@ -251,14 +265,14 @@ public class BoardManager : MonoBehaviour
 		
 	}
 	
-//	
-//	public void createNewMonster() {
-//		// TODO: hook up hunting scene
-//		hideInfo (); // in case we're viewing info panel, close it
-//		GameObject instance = Instantiate (gss.getMonster(), new Vector3 ( 1f, 1f, 0f), Quaternion.identity) as GameObject;
-//		instance.transform.SetParent (pieceHolder);
-//		heldPiece = instance;
-//	}
+	
+	public GameObject createNewMonster() {
+		// TODO: hook up hunting scene
+		hideInfo (); // in case we're viewing info panel, close it
+		GameObject instance = Instantiate (gss.monsterPrefabs[0], new Vector3 ( 1f, 1f, 0f), Quaternion.identity) as GameObject;
+		instance.transform.SetParent (pieceHolder);
+		return instance;
+	}
 	
 	// show the info panel with the monster's live info
 	public void showInfo(MonsterController monster) {	

@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class BuildMenuManager : MonoBehaviour {
 
 	private LabItem activeBuildItem;
-	private List<LabItem> labItems;
 
 	public GameObject buildButtonsPanel;
 	public GameObject buildButton; // button prefab
@@ -19,12 +18,13 @@ public class BuildMenuManager : MonoBehaviour {
 
 		board = GameObject.Find ("LabScene").GetComponent<BoardManager> ();
 		gss = GameObject.Find ("GameManager").GetComponent<GameStateStore> ();
-		labItems = gss.labItems;
 
 		buttonManagers = new List<BuildButtonManager> ();
 
 		// setup build menu
-		foreach (LabItem labItem in labItems) {
+		foreach (GameObject item in gss.labItemPrefabs) {
+
+			LabItem labItem = item.GetComponent<LabItem>();
 
 			GameObject btn = Instantiate (buildButton, new Vector3 ( 0f, 0f, 0f), buildButton.transform.localRotation) as GameObject;
 			btn.transform.SetParent(buildButtonsPanel.transform);				

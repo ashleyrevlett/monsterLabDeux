@@ -42,7 +42,8 @@ public class InfoPanelManager : MonoBehaviour {
 		gss = GameObject.Find ("GameManager").GetComponent<GameStateStore> ();
 
 		GameObject obj = GameObject.Find ("InfoPanel");
-		obj.SetActive (false);
+		if (obj)
+			obj.SetActive (false);
 
 		// temp
 		discoveriesTextT.text = "";
@@ -51,7 +52,6 @@ public class InfoPanelManager : MonoBehaviour {
 		buttons = buttonPanel.GetComponentsInChildren<Button> (true);
 
 
-//		gameObject.SetActive (false);
 
 	}
 

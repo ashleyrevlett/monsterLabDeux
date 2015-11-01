@@ -132,8 +132,8 @@ public class GameStateStore : MonoBehaviour {
 		return null;
 	}
 
-	public MonsterController getMonster() {
-		return monsters [0];
+	public GameObject getRandomMonster() {
+		return monsterPrefabs [0];
 	}
 
 

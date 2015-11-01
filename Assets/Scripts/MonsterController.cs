@@ -60,7 +60,6 @@ public class MonsterController : MonoBehaviour {
 		gm = GameObject.Find ("GameManager").GetComponent<GameManager> ();
 		gss = GameObject.Find ("GameManager").GetComponent<GameStateStore> ();
 
-
 		if (gm.currentLevel == 1) {
 			board = GameObject.Find ("LabScene").GetComponent<BoardManager> ();
 		} else {
@@ -72,7 +71,7 @@ public class MonsterController : MonoBehaviour {
 
 		// turn off collider until monster is set down in lab mode
 		bc = gameObject.GetComponent<BoxCollider2D> ();
-		if (gm.currentLevel == 1) {
+		if (gm.currentLevel == 1 && board.heldPiece != null) {
 			bc.enabled = false;
 		} else {
 			bc.enabled = true;
@@ -190,8 +189,10 @@ public class MonsterController : MonoBehaviour {
 
 	public void setIsPlaced(bool val) {
 		isPlaced = val;
-		if (isPlaced == true)
-			bc.enabled = true;
+		if (isPlaced == true) {		
+			BoxCollider2D bc2 = gameObject.GetComponent<BoxCollider2D>();
+			bc2.enabled = true;
+		}
 	}
 
 	void OnMouseDown() {

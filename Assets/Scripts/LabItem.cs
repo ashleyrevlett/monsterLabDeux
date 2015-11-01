@@ -19,14 +19,14 @@ public class LabItem : MonoBehaviour {
 
 	void Start() {
 		clickCollider = gameObject.GetComponent<BoxCollider2D> ();
-		clickCollider.enabled = false;
 		board = GameObject.Find ("LabScene").GetComponent<BoardManager> ();
 	}
 
 	public void setIsPlaced(bool val) {
 		isPlaced = val;
 		Debug.Log (val);
-		clickCollider.enabled = true;
+		if (clickCollider)
+			clickCollider.enabled = true;
 	}
 
 	public bool getIsPlaced() {
