@@ -33,6 +33,7 @@ public class BoardManager : MonoBehaviour
 	private MonsterController activeMonster; // monster whose info is being shown
 
 	private GameManager gm;
+	private AlertPanelManager alert;
 
 	void Start () {		
 
@@ -46,6 +47,7 @@ public class BoardManager : MonoBehaviour
 		gss = GameObject.Find ("GameManager").GetComponent<GameStateStore> ();
 		infoPanelObject = GameObject.Find ("InfoPanel");
 		infoPanel = GameObject.Find ("LabGUIPrefab").GetComponent<InfoPanelManager> ();
+		alert = GameObject.Find ("LabGUIPrefab").GetComponent<AlertPanelManager> ();
 
 		pieces = new List <GameObject> (); 
 		tiles = new List<TileManager> ();
@@ -58,6 +60,9 @@ public class BoardManager : MonoBehaviour
 		float boardCenterX = columns / 2f;
 		float boardCenterY = rows / 2f;
 		Camera.main.transform.position = new Vector3 (boardCenterX, boardCenterY, Camera.main.transform.position.z);
+
+		alert.ShowAlert ("Welcome to your lab, doctor!");
+
 
 	}
 
@@ -344,6 +349,12 @@ public class BoardManager : MonoBehaviour
 	
 	public int getMonsterCount() {
 		return monsters.Count;		
+	}
+
+	public void ShowHuntAlert() {
+		alert.ShowAlert ("Are you sure you want to go hunting?");
+		alert.AddButton ("Go Hunting!");
+		alert.okBtn.onClick.AddListener (LoadHuntScene);
 	}
 
 	public void LoadHuntScene() {
