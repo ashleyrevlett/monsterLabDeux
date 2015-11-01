@@ -11,11 +11,12 @@ public class BuildButtonManager : MonoBehaviour {
 
 	private BuildMenuManager buildMenu;
 	private Button button;
+	private GameStateStore gss;
 
 
 	void Start () {	
 
-		// remember game references
+		gss = GameObject.Find ("GameManager").GetComponent<GameStateStore> ();
 		buildMenu = GameObject.Find ("LabGUIPrefab").GetComponent<BuildMenuManager> ();
 
 		// setup click handler to change active build button in game state
@@ -29,7 +30,7 @@ public class BuildButtonManager : MonoBehaviour {
 	}
 	
 	public void updateActiveBuildButton(){
-		LabItem item = buildMenu.getLabItem (this.title);
+		LabItem item = gss.getLabItem (this.title);
 		if (item != null) {
 			buildMenu.setActiveBuildItem(item);
 		}

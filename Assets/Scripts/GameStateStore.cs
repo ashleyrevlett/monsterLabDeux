@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 public class GameStateStore : MonoBehaviour {
 
+	public GameObject[] labItemPrefabs;
+	public List<LabItem> labItems { get; private set; } // labItem script references
+
 	public float startingMoney;
 	public float remainingMoney { get; private set; }
 
@@ -38,6 +41,12 @@ public class GameStateStore : MonoBehaviour {
 		remainingMedicine = startingMedicine;
 		remainingWater = startingWater;
 		remainingAmmo = startingAmmo;
+
+		labItems = new List<LabItem> ();
+		foreach (GameObject item in labItemPrefabs) {
+			LabItem labitem = item.GetComponent<LabItem>();
+			labItems.Add(labitem);
+		}
 
 	}
 
@@ -104,6 +113,15 @@ public class GameStateStore : MonoBehaviour {
 
 		return true;
 	}
+		
+	public LabItem getLabItem(string title) {
+		foreach (LabItem labItem in labItems) {
+			if (labItem.title == title)
+				return (labItem);
+		}
+		return null;
+	}
+
 
 
 }

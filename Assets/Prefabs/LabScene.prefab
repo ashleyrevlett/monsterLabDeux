@@ -1636,9 +1636,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe1496647c8ad4dac9b5628f933bb867, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  labItemPrefabs:
-  - {fileID: 144396, guid: 898b822c099474e2d8a5f94f6de74ea2, type: 2}
-  - {fileID: 129068, guid: 5bc64798e2be1436f953b58a5a0831b9, type: 2}
   buildButtonsPanel: {fileID: 181648}
   buildButton: {fileID: 143624, guid: 1c4183f5c16fb444786182415aef0540, type: 2}
 --- !u!114 &11452802
@@ -1658,6 +1655,7 @@ MonoBehaviour:
   wall: {fileID: 150250, guid: 853cb148152fd4552bc528a4d408989b, type: 2}
   monsterObjects:
   - {fileID: 193416, guid: 6d1c5e6612948458b8b38ce20261c1bb, type: 2}
+  startingMonsterCount: 1
   dragSpeed: 15
 --- !u!114 &11453330
 MonoBehaviour:

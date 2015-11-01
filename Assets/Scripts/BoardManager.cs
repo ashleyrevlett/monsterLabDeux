@@ -22,6 +22,8 @@ public class BoardManager : MonoBehaviour
 	public GameObject[] monsterObjects;
 	private MonsterController[] monsterControllers;
 
+	public int startingMonsterCount = 1;
+
 	public float dragSpeed = 15f;
 	public bool selectingExperiment { get; set; }
 
@@ -100,12 +102,19 @@ public class BoardManager : MonoBehaviour
 				}
 			}
 		}
+//
+//		// create starting monsters and cages
+//		for (int i = 0; i < startingMonsterCount; i++) {
+//
+//			placeLabPiece(i*2, 2, );
+//		}
+
 
 	}
 
 
 	// Put labitem down on board tile
-	public void placePiece(int row, int column, GameObject piece) {	
+	public void placeLabPiece(int row, int column, GameObject piece) {	
 
 		// snap position to tile pos
 		pieces.Add (piece);
@@ -221,7 +230,7 @@ public class BoardManager : MonoBehaviour
 			if (isLocationValid ((int)position.x, (int)position.y, heldPiece)) {
 				float price = heldPiece.GetComponent<LabItem> ().price;
 				gss.deductMoney (price);
-				placePiece ((int)position.x, (int)position.y, heldPiece);
+				placeLabPiece ((int)position.x, (int)position.y, heldPiece);
 				Debug.Log ("Money deducted");
 			} else {
 				// destroy if we can't place it

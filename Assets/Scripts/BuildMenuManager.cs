@@ -3,27 +3,28 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class BuildMenuManager : MonoBehaviour {
-	
-	public GameObject[] labItemPrefabs;
+
 	private LabItem activeBuildItem;
+	private List<LabItem> labItems;
 
 	public GameObject buildButtonsPanel;
 	public GameObject buildButton; // button prefab
 	private List<BuildButtonManager> buttonManagers;
 
 	private BoardManager board;
+	private GameStateStore gss;
 
 	// Use this for initialization
 	void Start () {
 
 		board = GameObject.Find ("LabScene").GetComponent<BoardManager> ();
+		gss = GameObject.Find ("GameManager").GetComponent<GameStateStore> ();
+		labItems = gss.labItems;
 
 		buttonManagers = new List<BuildButtonManager> ();
 
 		// setup build menu
-		for (int i = 0; i < labItemPrefabs.Length; i++) {
-
-			LabItem labItem = labItemPrefabs[i].GetComponent<LabItem>();
+		foreach (LabItem labItem in labItems) {
 
 			GameObject btn = Instantiate (buildButton, new Vector3 ( 0f, 0f, 0f), buildButton.transform.localRotation) as GameObject;
 			btn.transform.SetParent(buildButtonsPanel.transform);				
@@ -53,14 +54,6 @@ public class BuildMenuManager : MonoBehaviour {
 	
 	public LabItem getActiveBuildItem() {
 		return (activeBuildItem);
-	}
-	
-	public LabItem getLabItem(string title) {
-		for (int i = 0; i < this.labItemPrefabs.Length; i++) {
-			if (this.labItemPrefabs[i].GetComponent<LabItem>().title == title)
-				return (this.labItemPrefabs[i].GetComponent<LabItem>());
-		}
-		return null;
 	}
 
 }
