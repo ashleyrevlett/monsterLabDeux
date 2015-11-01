@@ -17,11 +17,8 @@ public class BoardManager : MonoBehaviour
 	private List <GameObject> pieces;							    // all pieces placed on board
 	private List <TileManager> tiles;
 	private List <GameObject> walls;
-	private List <GameObject> monsters;
-
-	public GameObject[] monsterObjects;
-	private MonsterController[] monsterControllers;
-
+	private List <MonsterController> monsters; 	// monsters that have been placed on board
+	
 	public int startingMonsterCount = 1;
 
 	public float dragSpeed = 15f;
@@ -53,7 +50,7 @@ public class BoardManager : MonoBehaviour
 		pieces = new List <GameObject> (); 
 		tiles = new List<TileManager> ();
 		walls = new List<GameObject> ();
-		monsters = new List<GameObject> ();
+		monsters = new List<MonsterController> ();
 
 		CreateBoard ();
 
@@ -102,11 +99,12 @@ public class BoardManager : MonoBehaviour
 				}
 			}
 		}
-//
-//		// create starting monsters and cages
+
+		// create starting monsters and cages
+//		LabItem cage = gss.getLabItem ("Cage");
+//		MonsterController monster = gss.getMonster (); // TODO refactor monsters
 //		for (int i = 0; i < startingMonsterCount; i++) {
-//
-//			placeLabPiece(i*2, 2, );
+//			placeMonsterPiece(i*2, 2, monster);
 //		}
 
 
@@ -154,20 +152,19 @@ public class BoardManager : MonoBehaviour
 		return(true);
 	}
 
-	public void placeMonsterPiece(int row, int column, GameObject piece) {	
+	public void placeMonsterPiece(int row, int column, MonsterController monster) {	
 
 		// snap position to tile pos
-		monsters.Add (piece);
+		monsters.Add (monster);
 		Vector3 newPos = new Vector3 (row, column, 0f);
-		piece.transform.position = newPos;
+		monster.gameObject.transform.position = newPos;
 		
 		// let piece know it's been set down
-		MonsterController m = piece.GetComponent<MonsterController> ();
-		m.setIsPlaced (true);
+		monster.setIsPlaced (true);
 
 		// notify tile of its new occupant
 		TileManager tile = getTile (row, column);
-		tile.setMonster (m);
+		tile.setMonster (monster);
 
 	}
 	
@@ -242,7 +239,8 @@ public class BoardManager : MonoBehaviour
 			Debug.Log("monster wants to drop");
 			if (isMonsterLocationValid ((int)position.x, (int)position.y, heldPiece)) {
 				Debug.Log("monster location valud");
-				placeMonsterPiece ((int)position.x, (int)position.y, heldPiece);
+				MonsterController monster = heldPiece.GetComponent<MonsterController>();
+				placeMonsterPiece ((int)position.x, (int)position.y, monster);
 				Debug.Log ("Monster placed");
 				heldPiece = null;
 			} else {
@@ -253,15 +251,14 @@ public class BoardManager : MonoBehaviour
 		
 	}
 	
-	
-	public void createNewMonster() {
-		// TODO: hook up hunting scene
-		hideInfo (); // in case we're viewing info panel, close it
-		GameObject instance = Instantiate (monsterObjects[0], new Vector3 ( 1f, 1f, 0f), Quaternion.identity) as GameObject;
-		instance.transform.SetParent (pieceHolder);
-		heldPiece = instance;
-		
-	}
+//	
+//	public void createNewMonster() {
+//		// TODO: hook up hunting scene
+//		hideInfo (); // in case we're viewing info panel, close it
+//		GameObject instance = Instantiate (gss.getMonster(), new Vector3 ( 1f, 1f, 0f), Quaternion.identity) as GameObject;
+//		instance.transform.SetParent (pieceHolder);
+//		heldPiece = instance;
+//	}
 	
 	// show the info panel with the monster's live info
 	public void showInfo(MonsterController monster) {	

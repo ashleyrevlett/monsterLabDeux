@@ -31,7 +31,7 @@ public class TileManager : MonoBehaviour {
 		return monster;
 	}
 
-	public void setMonster ( MonsterController m) {
+	public void setMonster (MonsterController m) {
 		monster = m;
 	}
 

@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 public class GameStateStore : MonoBehaviour {
 
+	public GameObject[] monsterPrefabs;
+	public List<MonsterController> monsters { get; private set; }
+
 	public GameObject[] labItemPrefabs;
 	public List<LabItem> labItems { get; private set; } // labItem script references
 
@@ -47,6 +50,13 @@ public class GameStateStore : MonoBehaviour {
 			LabItem labitem = item.GetComponent<LabItem>();
 			labItems.Add(labitem);
 		}
+
+		monsters = new List<MonsterController> ();		
+		foreach (GameObject item in monsterPrefabs) {
+			MonsterController monster = item.GetComponent<MonsterController>();
+			monsters.Add(monster);
+		}
+
 
 	}
 
@@ -122,6 +132,9 @@ public class GameStateStore : MonoBehaviour {
 		return null;
 	}
 
+	public MonsterController getMonster() {
+		return monsters [0];
+	}
 
 
 }
