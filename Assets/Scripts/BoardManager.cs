@@ -56,13 +56,22 @@ public class BoardManager : MonoBehaviour
 
 		CreateBoard ();
 
+		alert.ShowAlert ("Welcome to your lab, doctor!");
+
+	}
+
+	void OnEnable() {
+
 		// move camera to center of board
 		float boardCenterX = columns / 2f;
 		float boardCenterY = rows / 2f;
 		Camera.main.transform.position = new Vector3 (boardCenterX, boardCenterY, Camera.main.transform.position.z);
 
-		alert.ShowAlert ("Welcome to your lab, doctor!");
+	}
 
+	void OnDisable() {
+	
+		// TODO: pause execution of monster coroutines so they won't die while we're hunting
 
 	}
 
