@@ -57,6 +57,7 @@ public class BoardManager : MonoBehaviour
 		CreateBoard ();
 
 		alert.ShowAlert ("Welcome to your lab, doctor!");
+		alert.CreateButton ("To the lab", alert.HideAlert);
 
 	}
 
@@ -362,8 +363,8 @@ public class BoardManager : MonoBehaviour
 
 	public void ShowHuntAlert() {
 		alert.ShowAlert ("Are you sure you want to go hunting?");
-		alert.AddButton ("Go Hunting!");
-		alert.okBtn.onClick.AddListener (LoadHuntScene);
+		alert.CreateButton ("Go Hunt", LoadHuntScene);
+		alert.CreateButton ("Cancel", alert.HideAlert);
 	}
 
 	public void LoadHuntScene() {
