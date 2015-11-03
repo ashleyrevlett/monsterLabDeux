@@ -56,8 +56,8 @@ public class BoardManager : MonoBehaviour
 
 		CreateBoard ();
 
-		alert.ShowAlert ("Welcome to your lab, doctor!");
-		alert.CreateButton ("To the lab", alert.HideAlert);
+		alert.ShowAlert ("Welcome to your lab, doctor!\nIt's a bit empty - you should build a cage, then find something to fill it.");
+		alert.CreateButton ("Continue", alert.HideAlert);
 
 	}
 

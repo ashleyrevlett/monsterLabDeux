@@ -33,30 +33,18 @@ public class AlertPanelManager : MonoBehaviour {
 		buttons.Clear ();
 		alertPanel.SetActive (false);	
 	}
-//
-//	public void AddButton(string text) {
-//		okBtn.GetComponentInChildren<Text>().text = text;
-//		okBtn.onClick.RemoveAllListeners ();
-//		// have to add listener from calling object //okBtn.onClick.AddListener (callback);
-//	}
 
 	public void CreateButton(string text, MyDelegate theDelegate) {
-		float buttonWidth = 30f;
-		float buttonPadding = 5f;
+		Debug.Log ("Creating button!");
 		GameObject instance = Instantiate (btn, Vector2.zero, Quaternion.identity) as GameObject;
 		instance.name = text + " Button";
-		instance.transform.SetParent (alertPanel.transform);
+		GameObject parent = GameObject.Find ("AlertButtonContainer");
+		instance.transform.SetParent (parent.transform);
 		instance.GetComponentInChildren<Text>().text = text;
-		RectTransform rect = instance.GetComponentInChildren<RectTransform> ();
-		rect.anchoredPosition = new Vector2(0.5f, 0);
-		rect.pivot = new Vector2 (0.5f, 0.5f);
-		rect.position = new Vector3 (rect.position.x + (buttons.Count * 100f), rect.position.y + 30f, rect.position.z);
 		Button thisBtn = instance.GetComponent<Button> ();
 		thisBtn.onClick.RemoveAllListeners ();
 		thisBtn.onClick.AddListener(delegate { theDelegate(); });
-
 		buttons.Add(instance);
-
 	}
 
 }
