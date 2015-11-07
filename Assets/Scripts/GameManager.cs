@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour {
 
@@ -24,23 +25,29 @@ public class GameManager : MonoBehaviour {
 
 	void LoadLevel(int level) {
 
+		List<GameObject> capturedMonsters = new List<GameObject> ();
 
 		if (level == 1) {
 
 			// destroy hunt scene if active
 			GameObject huntScene = GameObject.Find("HuntScene");
-			if (huntScene != null)
+			if (huntScene != null) {
+				// we are exiting the huntscene, so save any captured monsters, then clean up
+				HuntBoardManager huntBoard = huntScene.GetComponent<HuntBoardManager>();
+				capturedMonsters = new List<GameObject>(huntBoard.GetDeadMonsters());
 				Destroy(huntScene);
+			}
 
-			// crate board if doesn't exist
+			// create board if doesn't exist
 			if (labScene == null) {
 				labScene = Instantiate (labBoardPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+				labScene.name = "LabScene";
+				labScene.transform.SetParent (gameObject.transform);
 			}
 
 			labScene.SetActive(true);
-			labScene.name = "LabScene";
 			currentLevel = 1;
-			labScene.transform.SetParent (gameObject.transform);
+
 
 		} else if (level == 2) {
 
@@ -52,8 +59,21 @@ public class GameManager : MonoBehaviour {
 			huntScene.name = "HuntScene";
 			currentLevel = 2;
 			huntScene.transform.SetParent (gameObject.transform);
+
 		}	
 
+		BoardManager board = labScene.GetComponent<BoardManager>();
+		foreach (GameObject m in capturedMonsters) {
+			// find first available cage on board
+			Vector2 pos = board.getValidMonsterPosition(); 
+			// create new copy of captured monster
+			GameObject monster = board.createNewMonster(m);
+			MonsterController monstercontroller = monster.GetComponent<MonsterController>();
+			board.placeMonsterPiece((int)pos.x, (int)pos.y, monstercontroller);					
+			// turn bc on for monster
+			BoxCollider2D bcMonster = monster.GetComponent<BoxCollider2D>();
+			bcMonster.enabled = true;			
+		}
 
 	
 	}

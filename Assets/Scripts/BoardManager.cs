@@ -15,6 +15,7 @@ public class BoardManager : MonoBehaviour
 	public Transform pieceHolder  { get; private set; }             // gameobject parent for gamepieces
 	private Transform tileHolder; 									// gameobject parent for bg tiles
 	private List <GameObject> pieces;							    // all pieces placed on board
+	private List <LabItem> cages;
 	private List <TileManager> tiles;
 	private List <GameObject> walls;
 	private List <MonsterController> monsters; 	// monsters that have been placed on board
@@ -50,6 +51,7 @@ public class BoardManager : MonoBehaviour
 		alert = GameObject.Find ("LabGUIPrefab").GetComponent<AlertPanelManager> ();
 
 		pieces = new List <GameObject> (); 
+		cages = new List <LabItem> (); 
 		tiles = new List<TileManager> ();
 		walls = new List<GameObject> ();
 		monsters = new List<MonsterController> ();
@@ -73,6 +75,7 @@ public class BoardManager : MonoBehaviour
 	void OnDisable() {
 	
 		// TODO: pause execution of monster coroutines so they won't die while we're hunting
+		alert.HideAlert ();
 
 	}
 
@@ -124,7 +127,6 @@ public class BoardManager : MonoBehaviour
 			placeLabPiece(i+1, 2,cagePiece);
 
 			GameObject monster = createNewMonster();
-			monster.transform.SetParent (pieceHolder);
 			MonsterController monstercontroller = monster.GetComponent<MonsterController>();
 			placeMonsterPiece(i+1, 2, monstercontroller);
 
@@ -140,23 +142,6 @@ public class BoardManager : MonoBehaviour
 	}
 
 
-	// Put labitem down on board tile
-	public void placeLabPiece(int row, int column, GameObject piece) {	
-
-		// snap position to tile pos
-		pieces.Add (piece);
-		Vector3 newPos = new Vector3 (row, column, 0f);
-		piece.transform.position = newPos;
-
-		// let piece know it's been set down
-		LabItem labItem = piece.GetComponent<LabItem> ();
-		labItem.setIsPlaced (true);
-
-		// notify tile of its new occupant
-		TileManager tile = getTile (row, column);
-		tile.setLabItem (labItem);
-
-	}
 	
 	public bool isLocationValid(int col, int row, GameObject piece) {
 
@@ -181,52 +166,71 @@ public class BoardManager : MonoBehaviour
 		return(true);
 	}
 
-	public void placeMonsterPiece(int row, int column, MonsterController monster) {	
-
-		// snap position to tile pos
-		monsters.Add (monster);
-		Vector3 newPos = new Vector3 (row, column, 0f);
-		monster.gameObject.transform.position = newPos;
-		
-		// let piece know it's been set down
-		monster.setIsPlaced (true);
-
-		// notify tile of its new occupant
-		TileManager tile = getTile (row, column);
-		tile.setMonster (monster);
-
-	}
 	
-	public bool isMonsterLocationValid(int col, int row, GameObject piece) {
-
-		TileManager tile = getTile (row, col);
-		LabItem item = tile.getOccupant ();
-
-		if (item == null) // empty tile 
-			return true;
-		else
-			Debug.Log ("occupied");
-
-		// cage (occupiable=true)
-		if (tile.getOccupant ().occupiable && tile.getMonster() == null)
-			return true;
-		else 
-			return false;
-
-	}
-
-	public TileManager getTile(int row, int column) {
-
-		TileManager theTile = null;
-
-		foreach (TileManager tile in tiles) {
-			if (tile.gameObject.transform.position.x == column && tile.gameObject.transform.position.y == row) {
-				theTile = tile;		
+	public bool isMonsterLocationValid(int col, int row) {
+		// valid monster location is in unoccupied cage labitem
+		foreach (GameObject piece in pieces) {
+			LabItem labItem = piece.GetComponent<LabItem>();
+			if (labItem != null) {
+				if (labItem.occupiable && labItem.occupant == null) {
+					if (labItem.gameObject.transform.position.x == col && labItem.gameObject.transform.position.y == row) {
+						return true;
+					}
+				}
 			}
 		}
+		return false;
+	}
 
-		return theTile;
 	
+	// Put labitem down on board tile
+	public void placeLabPiece(int row, int column, GameObject piece) {	
+		
+		// snap position to tile pos
+		pieces.Add (piece);
+		Vector3 newPos = new Vector3 (row, column, 0f);
+		piece.transform.position = newPos;
+		
+		// let piece know it's been set down
+		LabItem labItem = piece.GetComponent<LabItem> ();
+		labItem.setIsPlaced (true);
+
+		if (labItem.title == "Cage") {
+			cages.Add (labItem);
+		}
+	
+	}
+
+	public void placeMonsterPiece(int row, int column, MonsterController monster) {	
+		// must be in an empty cage
+		LabItem cage = getCage (row, column);
+		if (cage != null) {
+			if (cage.occupant == null) {
+				// snap position to tile pos
+				monsters.Add (monster);
+				Vector3 newPos = new Vector3 (row, column, 0f);
+				monster.gameObject.transform.position = newPos;
+				monster.gameObject.transform.parent = GameObject.Find ("LabScene/Board/Pieces").transform;
+				cage.placeMonsterInside(monster);
+				monster.setIsPlaced (true);
+			}
+		}	
+	}
+
+	public LabItem getCage(int row, int column) {
+		foreach (LabItem cage in cages) {
+			if (cage.gameObject.transform.position.x == column && cage.gameObject.transform.position.y == column) 
+				return cage;
+		}
+		return null;
+	}
+
+	public TileManager getTile(int row, int column) {	
+		foreach (TileManager tile in tiles) {
+			if (tile.gameObject.transform.position.x == column && tile.gameObject.transform.position.y == row)
+				return tile;					
+		}
+		return null;
 	}
 
 	// pick up a game piece
@@ -266,7 +270,7 @@ public class BoardManager : MonoBehaviour
 			heldPiece = null;
 		} else if (heldPiece.tag == "Monster") {
 			Debug.Log("monster wants to drop");
-			if (isMonsterLocationValid ((int)position.x, (int)position.y, heldPiece)) {
+			if (isMonsterLocationValid ((int)position.x, (int)position.y)) {
 				Debug.Log("monster location valud");
 				MonsterController monster = heldPiece.GetComponent<MonsterController>();
 				placeMonsterPiece ((int)position.x, (int)position.y, monster);
@@ -279,13 +283,34 @@ public class BoardManager : MonoBehaviour
 		}
 		
 	}
+
+	public Vector3 getValidMonsterPosition() {
+
+		foreach (LabItem cage in cages) {
+			if (cage.occupant == null) {
+				return cage.gameObject.transform.position;
+			}
+		}
+
+		return Vector3.zero;
+
+	}
+
 	
-	
+	public GameObject createNewMonster(GameObject monsterPrefab) {
+		hideInfo (); // in case we're viewing info panel, close it
+		GameObject instance = Instantiate (monsterPrefab, new Vector3 ( 1f, 1f, 0f), Quaternion.identity) as GameObject;
+		instance.transform.SetParent (pieceHolder);
+		monsters.Add (instance.GetComponent<MonsterController> ());
+		return instance;
+	}
+
 	public GameObject createNewMonster() {
 		// TODO: hook up hunting scene
 		hideInfo (); // in case we're viewing info panel, close it
 		GameObject instance = Instantiate (gss.monsterPrefabs[0], new Vector3 ( 1f, 1f, 0f), Quaternion.identity) as GameObject;
 		instance.transform.SetParent (pieceHolder);
+		monsters.Add (instance.GetComponent<MonsterController> ());
 		return instance;
 	}
 	
@@ -361,10 +386,27 @@ public class BoardManager : MonoBehaviour
 		return monsters.Count;		
 	}
 
+	public int GetEmptyCageCount() {
+		int num = 0;
+		foreach (GameObject obj in pieces) {
+			LabItem labItem = obj.GetComponent<LabItem>();
+			if (labItem != null)
+				if (labItem.title == "Cage" && labItem.occupant == null)
+					num++;
+		}
+		Debug.Log ("Empty cages: " + num.ToString ());
+		return num;
+	}
+
 	public void ShowHuntAlert() {
-		alert.ShowAlert ("Are you sure you want to go hunting?");
-		alert.CreateButton ("Go Hunt", LoadHuntScene);
-		alert.CreateButton ("Cancel", alert.HideAlert);
+		if (GetEmptyCageCount () <= 0) {
+			alert.ShowAlert ("You need to build a cage before hunting!\nWhere else do you plan on keeping the monsters you trap?");
+			alert.CreateButton ("OK", alert.HideAlert);
+		} else {
+			alert.ShowAlert ("Are you sure you want to go hunting?");
+			alert.CreateButton ("Go Hunt", LoadHuntScene);
+			alert.CreateButton ("Cancel", alert.HideAlert);
+		}
 	}
 
 	public void LoadHuntScene() {

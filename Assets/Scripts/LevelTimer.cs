@@ -8,9 +8,11 @@ public class LevelTimer : MonoBehaviour {
 	public float sceneTime; // seconds
 	private float timeRemaining;
 	private GameManager gm;
+	private HuntBoardManager huntBoard;
 
 	void Start() {		
 		gm = GameObject.Find ("GameManager").GetComponent<GameManager> ();
+		huntBoard = GameObject.Find ("HuntScene").GetComponent<HuntBoardManager> ();
 		timeRemaining = sceneTime;
 		StartCoroutine (Countdown ());
 	}
@@ -23,7 +25,7 @@ public class LevelTimer : MonoBehaviour {
 			yield return null;
 		}
 		Debug.Log ("End Scene!");		
-		gm.LoadLabScene ();
+		huntBoard.LoadLabScene ();
 	}
 
 

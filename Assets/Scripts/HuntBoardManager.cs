@@ -29,6 +29,7 @@ public class HuntBoardManager : MonoBehaviour {
 	private List <GameObject> obstacles;
 
 	private GameManager gm;
+	private AlertPanelManager alert;
 
 	void Start () {
 		
@@ -45,7 +46,10 @@ public class HuntBoardManager : MonoBehaviour {
 		tileHolder.transform.SetParent (boardHolder);
 		pieceHolder = new GameObject ("Pieces").transform;
 		pieceHolder.transform.SetParent (boardHolder);
-		
+
+		alert = GameObject.Find ("HuntGUI").GetComponent<AlertPanelManager> ();
+		alert.HideAlert ();
+
 		pieces = new List <GameObject> (); 
 		tiles = new List<GameObject> ();
 		walls = new List<GameObject> ();	
@@ -117,8 +121,31 @@ public class HuntBoardManager : MonoBehaviour {
 
 	}
 
+	public List<GameObject> GetDeadMonsters() {
+		// returns array of gameobjects from huntscene
+		List<GameObject> deadMonsters = new List<GameObject>();
+		foreach (GameObject m in monsters) {
+			MonsterController monster = m.GetComponent<MonsterController>();
+			if (!monster.isAlive)
+				deadMonsters.Add(m);
+		}
+		return deadMonsters;
+	}
+
+	private int DeadMonsterCount() {
+		int num = 0;
+		foreach (GameObject m in monsters) {
+			MonsterController monster = m.GetComponent<MonsterController>();
+			if (!monster.isAlive)
+				num++;
+		}
+		return num;
+	}
+
 	public void LoadLabScene() {
-		gm.LoadLabScene ();
+		string msg = string.Format ("Time's up!\nMonsters Captured: {0}", DeadMonsterCount ());
+		alert.ShowAlert (msg);
+		alert.CreateButton ("Back to the Lab", gm.LoadLabScene);
 	}
 
 }

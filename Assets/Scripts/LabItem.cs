@@ -7,7 +7,7 @@ public class LabItem : MonoBehaviour {
 	public string description;
 	public float price;
 	public bool occupiable;
-	public MonsterController occupant { set; get; }
+	public MonsterController occupant = null;
 	private bool isPlaced = false; // for tracking when the tile is set down vs in cursor
 	private BoxCollider2D clickCollider;
 	private BoardManager board;
@@ -42,6 +42,14 @@ public class LabItem : MonoBehaviour {
 			board.DoExperiment (damagePerTick, experimentTime, gameObject.transform.position);
 
 		Debug.Log ("Mouse down on lab item");
+	}
+
+	public void placeMonsterInside(MonsterController monster) {
+		occupant = monster;
+	}
+
+	public void removeMonsterInside() {
+		occupant = null;
 	}
 
 }
