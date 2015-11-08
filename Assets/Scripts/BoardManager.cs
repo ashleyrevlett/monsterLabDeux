@@ -203,18 +203,21 @@ public class BoardManager : MonoBehaviour
 
 	public void placeMonsterPiece(int row, int column, MonsterController monster) {	
 		// must be in an empty cage
-		LabItem cage = getCage (row, column);
-		if (cage != null) {
-			if (cage.occupant == null) {
-				// snap position to tile pos
-				monsters.Add (monster);
-				Vector3 newPos = new Vector3 (row, column, 0f);
-				monster.gameObject.transform.position = newPos;
-				monster.gameObject.transform.parent = GameObject.Find ("LabScene/Board/Pieces").transform;
-				cage.placeMonsterInside(monster);
-				monster.setIsPlaced (true);
-			}
-		}	
+		Vector3 newPos = new Vector3 (row, column, -1f);
+		monster.gameObject.transform.position = newPos;
+		monster.setIsPlaced (true);
+		//		LabItem cage = getCage (row, column);
+//		if (cage != null) {
+//			if (cage.occupant == null) {
+//				// snap position to tile pos
+//				monsters.Add (monster);
+//				Vector3 newPos = new Vector3 (row, column, 0f);
+//				monster.gameObject.transform.position = newPos;
+//				monster.gameObject.transform.parent = GameObject.Find ("LabScene/Board/Pieces").transform;
+//				cage.placeMonsterInside(monster);
+//				monster.setIsPlaced (true);
+//			}
+//		}	
 	}
 
 	public LabItem getCage(int row, int column) {
@@ -236,14 +239,24 @@ public class BoardManager : MonoBehaviour
 	// pick up a game piece
 	public void HoldPiece(GameObject piece) {
 		hideInfo (); // in case we're viewing info panel, close it
-		float price = piece.GetComponent<LabItem>().price;
-		if (gss.remainingMoney >= price) {
-			var posVec = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			posVec.z = 0f;
-			heldPiece = Instantiate (piece, posVec, Quaternion.identity) as GameObject;		 
+		if (piece.tag == "Monster") {
+			Debug.Log("MONSTER HOLDING!");
+			var posVec = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+			posVec.z = -2f;
+			heldPiece = piece;		 
 			heldPiece.transform.SetParent (pieceHolder);
+			heldPiece.transform.position = posVec;
+			piece.GetComponent<MonsterController>().EnterLab();
 		} else {
-			Debug.Log("Not enough money to pick up");
+			float price = piece.GetComponent<LabItem> ().price;
+			if (gss.remainingMoney >= price) {
+				var posVec = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+				posVec.z = 0f;
+				heldPiece = Instantiate (piece, posVec, Quaternion.identity) as GameObject;		 
+				heldPiece.transform.SetParent (pieceHolder);
+			} else {
+				Debug.Log ("Not enough money to pick up");
+			}
 		}
 	}
 	
@@ -270,15 +283,15 @@ public class BoardManager : MonoBehaviour
 			heldPiece = null;
 		} else if (heldPiece.tag == "Monster") {
 			Debug.Log("monster wants to drop");
-			if (isMonsterLocationValid ((int)position.x, (int)position.y)) {
+			//if (isMonsterLocationValid ((int)position.x, (int)position.y)) {
 				Debug.Log("monster location valud");
 				MonsterController monster = heldPiece.GetComponent<MonsterController>();
 				placeMonsterPiece ((int)position.x, (int)position.y, monster);
 				Debug.Log ("Monster placed");
 				heldPiece = null;
-			} else {
-				Debug.Log("monster position not valid");
-			}
+//			} else {
+//				Debug.Log("monster position not valid");
+//			}
 			// do not destroy monster; hold it until we place it in the right spot
 		}
 		
@@ -296,23 +309,7 @@ public class BoardManager : MonoBehaviour
 
 	}
 
-	
-	public GameObject createNewMonster(GameObject monsterPrefab) {
-		hideInfo (); // in case we're viewing info panel, close it
-		GameObject instance = Instantiate (monsterPrefab, new Vector3 ( 1f, 1f, 0f), Quaternion.identity) as GameObject;
-		instance.transform.SetParent (pieceHolder);
-		monsters.Add (instance.GetComponent<MonsterController> ());
-		return instance;
-	}
 
-	public GameObject createNewMonster() {
-		// TODO: hook up hunting scene
-		hideInfo (); // in case we're viewing info panel, close it
-		GameObject instance = Instantiate (gss.monsterPrefabs[0], new Vector3 ( 1f, 1f, 0f), Quaternion.identity) as GameObject;
-		instance.transform.SetParent (pieceHolder);
-		monsters.Add (instance.GetComponent<MonsterController> ());
-		return instance;
-	}
 	
 	// show the info panel with the monster's live info
 	public void showInfo(MonsterController monster) {	
@@ -411,6 +408,15 @@ public class BoardManager : MonoBehaviour
 
 	public void LoadHuntScene() {
 		gm.LoadHuntScene ();
+	}
+
+	public GameObject createNewMonster() {
+		// TODO: hook up hunting scene
+		hideInfo (); // in case we're viewing info panel, close it
+		GameObject instance = Instantiate (gss.monsterPrefabs[0], new Vector3 ( 1f, 1f, 0f), Quaternion.identity) as GameObject;
+		instance.transform.SetParent (pieceHolder);
+		monsters.Add (instance.GetComponent<MonsterController> ());
+		return instance;
 	}
 
 }

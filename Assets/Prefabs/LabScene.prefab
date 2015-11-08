@@ -396,6 +396,7 @@ GameObject:
   - 114: {fileID: 11453054}
   - 114: {fileID: 11455702}
   - 114: {fileID: 11491018}
+  - 114: {fileID: 11442958}
   m_Layer: 5
   m_Name: LabGUIPrefab
   m_TagString: Untagged
@@ -674,6 +675,24 @@ GameObject:
   - 114: {fileID: 11417156}
   m_Layer: 5
   m_Name: HealButton
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &187110
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 22458226}
+  - 222: {fileID: 22257806}
+  - 114: {fileID: 11458898}
+  - 114: {fileID: 11417174}
+  m_Layer: 5
+  m_Name: MonsterPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1098,6 +1117,26 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: HEAL
+--- !u!114 &11417174
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 187110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -405508275, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 4
+  m_Spacing: 20
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
 --- !u!114 &11417866
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1595,6 +1634,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildButtonsPanel: {fileID: 172802}
   buildButton: {fileID: 143624, guid: 1c4183f5c16fb444786182415aef0540, type: 2}
+  buttonSize: 64
 --- !u!114 &11434626
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1818,6 +1858,18 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &11442958
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 144946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e1cc905b50c441f187fbc144e71311c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonObject: {fileID: 126244, guid: b7ef88c79b5364d9197356d7bf029ed3, type: 2}
 --- !u!114 &11449276
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2041,6 +2093,33 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: Welcome to your lab, doctor!\nYou may start experimenting now, or hunt for
     new monsters. You'll need an empty cage first.
+--- !u!114 &11458898
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 187110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
 --- !u!114 &11460278
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2803,6 +2882,12 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 151984}
+--- !u!222 &22257806
+CanvasRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 187110}
 --- !u!222 &22261134
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -3044,6 +3129,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
+  - {fileID: 22458226}
   - {fileID: 22498540}
   - {fileID: 22467838}
   - {fileID: 22472780}
@@ -3366,6 +3452,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 27}
   m_SizeDelta: {x: -24, y: 30}
   m_Pivot: {x: .5, y: .5}
+--- !u!224 &22458226
+RectTransform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 187110}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 22413452}
+  m_RootOrder: 0
+  m_AnchorMin: {x: .5, y: 0}
+  m_AnchorMax: {x: .5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 40}
+  m_SizeDelta: {x: 300, y: 60}
+  m_Pivot: {x: .5, y: .5}
 --- !u!224 &22467838
 RectTransform:
   m_ObjectHideFlags: 1
@@ -3378,11 +3481,11 @@ RectTransform:
   m_Children:
   - {fileID: 22413468}
   m_Father: {fileID: 22413452}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_AnchorMin: {x: 0, y: .5}
   m_AnchorMax: {x: 0, y: .5}
   m_AnchoredPosition: {x: 42, y: 0}
-  m_SizeDelta: {x: 84, y: 300}
+  m_SizeDelta: {x: 84, y: 200}
   m_Pivot: {x: .5, y: .5}
 --- !u!224 &22468262
 RectTransform:
@@ -3458,7 +3561,7 @@ RectTransform:
   - {fileID: 22479564}
   - {fileID: 22428208}
   m_Father: {fileID: 22413452}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -100, y: 0}
@@ -3477,7 +3580,7 @@ RectTransform:
   - {fileID: 22481814}
   - {fileID: 22403904}
   m_Father: {fileID: 22413452}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -3725,7 +3828,7 @@ RectTransform:
   - {fileID: 22473822}
   - {fileID: 22468262}
   m_Father: {fileID: 22413452}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -32}

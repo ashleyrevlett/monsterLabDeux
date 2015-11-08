@@ -4,12 +4,16 @@ using System.Collections;
 
 public class BuildButtonManager : MonoBehaviour {
 
+	/* Setup build button w/ price, text.
+	 * Handle button press callback.
+	 */
+
 	public string title;
 	public float price;
 	public Text titleText;
 	public Text priceText;
 
-	private BuildMenuManager buildMenu;
+	private BoardManager board;
 	private Button button;
 	private GameStateStore gss;
 
@@ -17,7 +21,7 @@ public class BuildButtonManager : MonoBehaviour {
 	void Start () {	
 
 		gss = GameObject.Find ("GameManager").GetComponent<GameStateStore> ();
-		buildMenu = GameObject.Find ("LabGUIPrefab").GetComponent<BuildMenuManager> ();
+		board = GameObject.Find ("LabScene").GetComponent<BoardManager> ();
 
 		// setup click handler to change active build button in game state
 		button = gameObject.GetComponent<Button> ();
@@ -28,11 +32,12 @@ public class BuildButtonManager : MonoBehaviour {
 		priceText.text = "$" + price.ToString ("F2");
 
 	}
-	
+
+	// button press callback
 	public void updateActiveBuildButton(){
 		LabItem item = gss.getLabItem (this.title);
 		if (item != null) {
-			buildMenu.setActiveBuildItem(item);
+			board.HoldPiece (item.gameObject);
 		}
 	}
 

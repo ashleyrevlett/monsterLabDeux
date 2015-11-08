@@ -299,6 +299,7 @@ MonoBehaviour:
   currentLevel: 1
   labBoardPrefab: {fileID: 191074, guid: d6d7af0143cde40f49b64efed1eef1d3, type: 2}
   huntBoardPrefab: {fileID: 150808, guid: c88eba7a4dd604189b51caad3db6b136, type: 2}
+  capturedMonsters: []
 --- !u!4 &1899244971
 Transform:
   m_ObjectHideFlags: 0

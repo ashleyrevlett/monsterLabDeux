@@ -10,73 +10,58 @@ public class GameManager : MonoBehaviour {
 	public GameObject huntBoardPrefab; // level 2
 	private GameObject labScene;
 	private GameObject huntScene;
+	public List<GameObject> capturedMonsters;
 
 	void Start () {
-		LoadLevel(currentLevel);
+
+		capturedMonsters = new List<GameObject> ();
+		LoadLabScene ();
+
 	}
 
 	public void LoadHuntScene() {
-		LoadLevel (2);
+
+		capturedMonsters.Clear ();
+
+		// pause lab scene
+		labScene.SetActive(false);
+		currentLevel = 2;
+
+		// create hunt board scene
+		huntScene = Instantiate (huntBoardPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+		huntScene.name = "HuntScene";
+		huntScene.transform.SetParent (gameObject.transform);
+
+
 	}
 
 	public void LoadLabScene() {
-		LoadLevel (1);
-	}
 
-	void LoadLevel(int level) {
+		capturedMonsters.Clear ();
 
-		List<GameObject> capturedMonsters = new List<GameObject> ();
+		// called on first game load and after hunt scene
+		currentLevel = 1;
 
-		if (level == 1) {
-
-			// destroy hunt scene if active
-			GameObject huntScene = GameObject.Find("HuntScene");
-			if (huntScene != null) {
-				// we are exiting the huntscene, so save any captured monsters, then clean up
-				HuntBoardManager huntBoard = huntScene.GetComponent<HuntBoardManager>();
-				capturedMonsters = new List<GameObject>(huntBoard.GetDeadMonsters());
-				Destroy(huntScene);
-			}
-
-			// create board if doesn't exist
-			if (labScene == null) {
-				labScene = Instantiate (labBoardPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-				labScene.name = "LabScene";
-				labScene.transform.SetParent (gameObject.transform);
-			}
-
-			labScene.SetActive(true);
-			currentLevel = 1;
-
-
-		} else if (level == 2) {
-
-			// pause lab scene
-			labScene.SetActive(false);
-
-			// create hunt board scene
-			huntScene = Instantiate (huntBoardPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-			huntScene.name = "HuntScene";
-			currentLevel = 2;
-			huntScene.transform.SetParent (gameObject.transform);
-
-		}	
-
-		BoardManager board = labScene.GetComponent<BoardManager>();
-		foreach (GameObject m in capturedMonsters) {
-			// find first available cage on board
-			Vector2 pos = board.getValidMonsterPosition(); 
-			// create new copy of captured monster
-			GameObject monster = board.createNewMonster(m);
-			MonsterController monstercontroller = monster.GetComponent<MonsterController>();
-			board.placeMonsterPiece((int)pos.x, (int)pos.y, monstercontroller);					
-			// turn bc on for monster
-			BoxCollider2D bcMonster = monster.GetComponent<BoxCollider2D>();
-			bcMonster.enabled = true;			
+		// destroy hunt scene if active
+		GameObject huntScene = GameObject.Find("HuntScene");
+		if (huntScene != null) {
+			// we are exiting the huntscene, so save any captured monsters, then clean up
+			HuntBoardManager huntBoard = huntScene.GetComponent<HuntBoardManager>();
+			capturedMonsters = new List<GameObject>(huntBoard.GetDeadMonsters());
+			Destroy(huntScene);
 		}
+		
+		// create board if doesn't exist
+		if (labScene == null) {
+			labScene = Instantiate (labBoardPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+			labScene.name = "LabScene";
+			labScene.transform.SetParent (gameObject.transform);
+		}
+		
+		labScene.SetActive(true);
 
-	
 	}
+
 	
 
 
