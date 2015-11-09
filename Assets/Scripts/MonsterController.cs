@@ -58,7 +58,7 @@ public class MonsterController : MonoBehaviour {
 		bc = gameObject.GetComponent<BoxCollider2D> ();
 
 		// create initial monster 
-		monsterName = "Lorem ipsum";
+		monsterName = gss.getRandomName();
 		monsterSex = (Sex)(UnityEngine.Random.Range(0, Enum.GetNames(typeof(Sex)).Length));
 		lifespan = (int)UnityEngine.Random.Range (2f, gss.daysPerYear * 100f);
 		age = (int)UnityEngine.Random.Range (1f, lifespan - 1f);
@@ -76,11 +76,24 @@ public class MonsterController : MonoBehaviour {
 
 
 	void OnEnable() {
-		if (gm.currentLevel != 1) {
+		if (gm.currentLevel == 1 && isPlaced) {
+			// already placed in lab, need to start tick when we enable the monster
+			// since we won't be placing it manually
+			InvokeRepeating ("Tick", 5f, 5f);
+		} else if (gm.currentLevel == 2) {
 			huntboard = GameObject.Find ("HuntScene").GetComponent<HuntBoardManager> ();
 			StartCoroutine (Roam ());
 		}
+
 	}
+
+	void OnDisable() {
+		// disabled when in lab going to huntscene (may be on board),
+		// and in huntscene when goign to labscene
+		CancelInvoke("Tick");
+	}
+
+
 
 	public void EnterLab() {
 		Debug.Log ("Reborn!!");

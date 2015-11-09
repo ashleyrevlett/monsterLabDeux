@@ -283,6 +283,20 @@ MonoBehaviour:
   startingFood: 5
   startingMedicine: 1
   startingAmmo: 0
+  nameStrings: "Ancalagon, Anfauglir, Annatar, Artano, Aulendil, Azog, Balchoth, Bauglir,
+    Belcha, Belegor, Beleg\xFBr, Belegurth, Bert, Bill, Bolg, Candle, Carcharoth,
+    Cave-troll, Cold-drake, Corsair, Curumo, Curun\xEDr, Draugluin, Durin\xB4s Bane,
+    Dwimmerlaik, Fire-drake, Flame of Ud\xFBn, Flie, Fluithuin, Fuinur, Gaurhoth,
+    Golfimbul, Glamhoth, Glaurung, Glorund, Gorbag, Gorg\xFBn, Gorthaur, Gothmog,
+    Grishn\xE1k, Half-orc, Half-troll, Herumor, Hill-troll, Hobgoblin, Jaws of Thirst,
+    Kham\xFBl, Kraken, Lagduf, Lieut. o, Lieut, Long-worm, Mauh\xFBr, Melegor, Melkor,
+    Mountain-troll, Mouth of Sauron, M\xFBmak, M\xFBmakil, Muzgash, Necromancer, Oathbreakers,
+    Oikeroi, Ol, Orch, Paths o, Radbug, Red Maw, Scatha, Shadow Host, Shagrat, Sharkey,
+    Slinker, Sm\xE9agol, Snaga, Sneak, Snow-troll, Southron, Stinker, Stone-troll,
+    Swarthy Men, Swertings, Thuringwethil (se, Tiberth, Tifil, Tom, Torog, Trahald,
+    Two-headed troll, Ufthak, Ugl\xFBk, \xDAlairi, Ulbandi, Uldor, Ulfang, Ulfast,
+    Ulworth, Umuiyan, Urul\xF3ki, Valaraukar, War, Watcher i, Were-worm, William,
+    Willow (se, Witch-kin,  Wolf, Worm, Wormtongue, Yrch"
   daysPerYear: 10
   secsPerDay: 300
 --- !u!114 &1899244970

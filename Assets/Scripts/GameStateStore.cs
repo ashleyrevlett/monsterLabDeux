@@ -26,6 +26,9 @@ public class GameStateStore : MonoBehaviour {
 	public float startingAmmo;
 	public float remainingAmmo { get; private set; }	
 
+	public string nameStrings = "Ancalagon, Anfauglir, Annatar, Artano, Aulendil, Azog, Balchoth, Bauglir, Belcha, Belegor, Belegûr, Belegurth, Bert, Bill, Bolg, Candle, Carcharoth, Cave-troll, Cold-drake, Corsair, Curumo, Curunír, Draugluin, Durin´s Bane, Dwimmerlaik, Fire-drake, Flame of Udûn, Flie, Fluithuin, Fuinur, Gaurhoth, Golfimbul, Glamhoth, Glaurung, Glorund, Gorbag, Gorgûn, Gorthaur, Gothmog, Grishnák, Half-orc, Half-troll, Herumor, Hill-troll, Hobgoblin, Jaws of Thirst, Khamûl, Kraken, Lagduf, Lieut. o, Lieut, Long-worm, Mauhûr, Melegor, Melkor, Mountain-troll, Mouth of Sauron, Mûmak, Mûmakil, Muzgash, Necromancer, Oathbreakers, Oikeroi, Ol, Orch, Paths o, Radbug, Red Maw, Scatha, Shadow Host, Shagrat, Sharkey, Slinker, Sméagol, Snaga, Sneak, Snow-troll, Southron, Stinker, Stone-troll, Swarthy Men, Swertings, Thuringwethil (se, Tiberth, Tifil, Tom, Torog, Trahald, Two-headed troll, Ufthak, Uglûk, Úlairi, Ulbandi, Uldor, Ulfang, Ulfast, Ulworth, Umuiyan, Urulóki, Valaraukar, War, Watcher i, Were-worm, William, Willow (se, Witch-kin,  Wolf, Worm, Wormtongue, Yrch"; 
+	public List<string> names { get; private set; }
+
 
 	public int daysPerYear = 10;
 	public int secsPerDay = 300;
@@ -36,6 +39,8 @@ public class GameStateStore : MonoBehaviour {
 
 
 	void Start() {
+
+		names = new List<string>(nameStrings.Split (','));
 
 		daysElapsed = 0;
 		secsElapsed = 0f;
@@ -56,7 +61,6 @@ public class GameStateStore : MonoBehaviour {
 			MonsterController monster = item.GetComponent<MonsterController>();
 			monsters.Add(monster);
 		}
-
 
 	}
 
@@ -134,6 +138,11 @@ public class GameStateStore : MonoBehaviour {
 
 	public GameObject getRandomMonster() {
 		return monsterPrefabs [0];
+	}
+
+	public string getRandomName() {	
+		int rndIdx = Random.Range (0, (names.Count - 1));
+		return names [rndIdx];
 	}
 
 

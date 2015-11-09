@@ -254,6 +254,8 @@ public class BoardManager : MonoBehaviour
 				posVec.z = 0f;
 				heldPiece = Instantiate (piece, posVec, Quaternion.identity) as GameObject;		 
 				heldPiece.transform.SetParent (pieceHolder);
+				BoxCollider2D bc = heldPiece.GetComponent<BoxCollider2D>();
+				bc.enabled = false;
 			} else {
 				Debug.Log ("Not enough money to pick up");
 			}
